@@ -4,7 +4,6 @@
 ###########################################
 
 
-
 ############################################
 #### Group composition function
 ############################################
@@ -133,7 +132,7 @@ sample_balanced_session <- function(n_total = 15) {
   return(all_samples)
 }
 
-# Run 12 sessions with flexible sampling
+# Run 17 sessions with flexible sampling
 set.seed(1)
 total_experiences <- c()
 session_compositions <- list()

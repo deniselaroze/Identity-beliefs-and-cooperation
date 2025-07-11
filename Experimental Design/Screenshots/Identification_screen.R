@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+  <html lang="es">
+    <head>
+    <meta charset="UTF-8">
+      <title>CPR Game – Cuestionario Inicial</title>
+      <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 2rem;
+        background-color: #fff;
+      }
+    .welcome-box {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 2.5rem 2rem;
+      margin: 4rem auto 2rem auto;
+      max-width: 480px;
+      background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      text-align: left;
+    }
+    .icon {
+      width: 58px;
+      height: 58px;
+      display: block;
+      margin: 0 auto 1.2rem auto;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #2A6773;
+        margin-bottom: 1.3rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin: 1.1rem 0 0.3rem 0;
+      color: #222;
+        font-size: 1.08rem;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 0.4rem;
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      border-radius: 5px;
+      border: 1px solid #bdbdbd;
+    }
+    .btn-wrap {
+      text-align: center;
+    }
+    button {
+      padding: 0.8rem 2.2rem;
+      font-size: 1.09rem;
+      background-color: #2A6773;
+        color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 2.2rem;
+      transition: background 0.2s;
+      display: inline-block;
+    }
+    button:hover {
+      background-color: #1d4851;
+    }
+    .footer {
+      margin-top: 1.4rem;
+      font-size: 0.97rem;
+      color: #444;
+        text-align: center;
+    }
+    </style>
+      </head>
+      <body>
+      <div class="welcome-box">
+      <!-- CPR icon, same as structure session screen -->
+      <svg class="icon" viewBox="0 0 64 64">
+      <circle cx="32" cy="10" r="8" fill="#2A6773"/>
+      <line x1="32" y1="18" x2="32" y2="46" stroke="#2A6773" stroke-width="5"/>
+      <line x1="20" y1="28" x2="44" y2="28" stroke="#2A6773" stroke-width="5"/>
+      <line x1="32" y1="46" x2="20" y2="60" stroke="#2A6773" stroke-width="5"/>
+      <line x1="32" y1="46" x2="44" y2="60" stroke="#2A6773" stroke-width="5"/>
+      </svg>
+      <h1>Cuestionario Inicial</h1>
+      
+      <form id="cuestionario-form" autocomplete="off">
+      <label for="facultySelect">1. ¿En qué <strong>facultad</strong> estudias?</label>
+      <select id="facultySelect" required>
+      <option value="" disabled selected>Seleccione su facultad...</option>
+      <option>Arquitectura y Arte</option>
+      <option>Ciencias de la Salud</option>
+      <option>Comunicaciones</option>
+      <option>Derecho</option>
+      <option>Diseño</option>
+      <option>Economía y Negocios</option>
+      <option>Ingeniería</option>
+      <option>Medicina Clínica Alemana UDD</option>
+      <option>Psicología</option>
+      </select>
+      <div class="btn-wrap">
+      <button type="button" id="continueBtn1">Continuar</button>
+      </div>
+      
+      <div id="degreeStep" style="display:none;">
+      <label for="degreeSelect">2. ¿Qué <strong>carrera</strong> estudias?</label>
+      <select id="degreeSelect" required>
+      <option value="" disabled selected>Seleccione su carrera...</option>
+      </select>
+      <div class="btn-wrap">
+      <button type="submit" id="continueBtn2">Continuar</button>
+      </div>
+      </div>
+      </form>
+      <div class="footer">
+      Si tienes dudas, puedes consultar al equipo de investigación en cualquier momento levantando la mano.
+    </div>
+      </div>
+      
+      <script>
+      const degreesByFaculty = {
+        "Arquitectura y Arte": ["Arquitectura"],
+        "Ciencias de la Salud": [
+          "Enfermería","Kinesiología","Nutrición y Dietética",
+          "Odontología","Tecnología Médica","Terapia Ocupacional","Fonoaudiología"
+        ],
+        "Comunicaciones": [
+          "Cine","Periodismo y Comunicación","Publicidad"
+        ],
+        "Derecho": ["Derecho"],
+        "Diseño": ["Diseño"],
+        "Economía y Negocios": [
+          "Ingeniería Comercial","Global Business Administration","Data Business Intelligence"
+        ],
+        "Ingeniería": [
+          "Ingeniería Civil en Informática e Innovación Tecnológica",
+          "Ingeniería Civil en Informática e Inteligencia Artificial",
+          "Ingeniería Civil Industrial",
+          "Ingeniería Civil en Obras Civiles",
+          "Ingeniería Civil en Minería",
+          "Ingeniería Civil Plan Común",
+          "Geología",
+          "Ingeniería Civil en BioMedicina"
+        ],
+        "Medicina Clínica Alemana UDD": [
+          "Medicina","Enfermería","Kinesiología","Nutrición y Dietética",
+          "Odontología","Tecnología Médica","Terapia Ocupacional","Fonoaudiología"
+        ],
+        "Psicología": ["Psicología"]
+      };
+    
+    const facultySelect = document.getElementById('facultySelect');
+    const continueBtn1 = document.getElementById('continueBtn1');
+    const degreeStep = document.getElementById('degreeStep');
+    const degreeSelect = document.getElementById('degreeSelect');
+    const form = document.getElementById('cuestionario-form');
+    
+    continueBtn1.addEventListener('click', function() {
+      const faculty = facultySelect.value;
+      if (!faculty) {
+        alert('Por favor, seleccione una facultad.');
+        return;
+      }
+      // Populate degrees
+      degreeSelect.innerHTML = '<option value="" disabled selected>Seleccione su carrera...</option>';
+      degreesByFaculty[faculty].forEach(function(deg) {
+        const opt = document.createElement('option');
+        opt.value = deg;
+        opt.textContent = deg;
+        degreeSelect.appendChild(opt);
+      });
+      degreeStep.style.display = 'block';
+      continueBtn1.style.display = 'none';
+      facultySelect.disabled = true;
+    });
+    
+    form.addEventListener('submit', function(e) {
+      if (!degreeSelect.value) {
+        alert('Por favor, seleccione una carrera.');
+        e.preventDefault();
+        return;
+      }
+      // Aquí podrías manejar la transición a la siguiente pantalla
+      // Por ejemplo: window.location.href = "next_screen.html";
+    });
+    </script>
+      </body>
+      </html>
+      

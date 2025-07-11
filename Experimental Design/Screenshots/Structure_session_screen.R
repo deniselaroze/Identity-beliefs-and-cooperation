@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+  <html lang="es">
+    <head>
+    <meta charset="UTF-8">
+      <title>CPR Game – Protocolo de la Sesión</title>
+      <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 2rem;
+        background-color: #fff;
+      }
+    
+    .welcome-box {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 2.5rem 2rem;
+      margin: 4rem auto 2rem auto;
+      max-width: 480px;
+      background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .icon {
+      width: 58px;
+      height: 58px;
+      margin-bottom: 1.2rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      color: #2A6773;
+        margin-bottom: 1.3rem;
+      font-weight: bold;
+    }
+    
+    ol {
+      padding-left: 1.1em;
+      text-align: left;
+      margin: 0 auto 1.3rem auto;
+      max-width: 390px;
+      font-size: 1.09rem;
+      color: #222;
+    }
+    li {
+      margin-bottom: 0.8em;
+      line-height: 1.5;
+    }
+    
+    .footer {
+      margin-top: 1.4rem;
+      font-size: 0.97rem;
+      color: #444;
+        text-align: center;
+    }
+    
+    button {
+      padding: 0.8rem 2.2rem;
+      font-size: 1.09rem;
+      background-color: #2A6773;
+        color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 2.2rem;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background-color: #1d4851;
+    }
+    p, ol {
+      text-align: justify;
+    }
+    </style>
+      </head>
+      <body>
+      <div class="welcome-box">
+      <!-- Icon consistent with other screens -->
+      <svg class="icon" viewBox="0 0 64 64">
+      <circle cx="32" cy="10" r="8" fill="#2A6773"/>
+      <line x1="32" y1="18" x2="32" y2="46" stroke="#2A6773" stroke-width="5"/>
+      <line x1="20" y1="28" x2="44" y2="28" stroke="#2A6773" stroke-width="5"/>
+      <line x1="32" y1="46" x2="20" y2="60" stroke="#2A6773" stroke-width="5"/>
+      <line x1="32" y1="46" x2="44" y2="60" stroke="#2A6773" stroke-width="5"/>
+      </svg>
+      <h1>Esta actividad incluye las siguientes secciones:</h1>
+      <ol>
+      <li><b>Cuestionario inicial</b></li>
+      <li><b>Asignación aleatoria a grupos</b></li>
+      <li><b>Instrucciones sobre el juego</b></li>
+      <li><b>Medición inicial de expectativas</b></li>
+      <li><b>Primera sección del juego (método de estrategias)</b></li>
+      <li><b>Segunda sección del juego (juego repetido)</b></li>
+      <li><b>Actualización de expectativas durante el juego</b></li>
+      <li><b>Encuesta final</b></li>
+      <li><b>Pago</b></li>
+      </ol>
+      <div class="footer">
+      Duración total estimada: 1 hora.<br>
+      Si tienes dudas, puedes consultar al equipo de investigación en cualquier momento levantando la mano.
+    </div>
+      <button>Continuar</button>
+      </div>
+      </body>
+      </html>

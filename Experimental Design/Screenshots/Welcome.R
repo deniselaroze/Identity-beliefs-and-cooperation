@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+  <html lang="es">
+    <head>
+    <meta charset="UTF-8">
+      <title>CPR Game - Bienvenida</title>
+      <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 2rem;
+        background-color: #fff;
+      }
+    
+    .welcome-box {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 2.5rem 2rem;
+      margin: 4rem auto 2rem auto;
+      max-width: 480px;
+      background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .icon {
+      width: 58px;
+      height: 58px;
+      margin-bottom: 1.2rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      color: #2A6773;
+        margin-bottom: 0.5rem;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      color: #222;
+        margin: 1.5rem 0;
+      line-height: 1.5;
+    }
+    
+    .small-text {
+      font-size: 0.8rem;
+      color: #444;
+        margin-top: 1.5rem;
+      text-align: justify;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    button {
+      padding: 0.8rem 2.2rem;
+      font-size: 1.1rem;
+      background-color: #2A6773;
+        color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background-color: #1d4851;
+    }
+    p {
+      text-align: justify;
+    }
+    </style>
+      </head>
+      <body>
+      <div class="welcome-box">
+      <!-- CPR Icon - matches style -->
+      <svg class="icon" viewBox="0 0 64 64">
+      <circle cx="32" cy="10" r="8" fill="#2A6773"/>
+      <line x1="32" y1="18" x2="32" y2="46" stroke="#2A6773" stroke-width="5"/>
+      <line x1="20" y1="28" x2="44" y2="28" stroke="#2A6773" stroke-width="5"/>
+      <line x1="32" y1="46" x2="20" y2="60" stroke="#2A6773" stroke-width="5"/>
+      <line x1="32" y1="46" x2="44" y2="60" stroke="#2A6773" stroke-width="5"/>
+      </svg>
+      <h1>¡Bienvenida/o!</h1>
+      <p>
+      Gracias por participar en este estudio. En esta ocasión, les invitamos a tomar decisiones sobre la gestión de recursos en una organización estudiantil.
+    <br><br>
+      Antes de comenzar, por favor asegúrense de leer y firmar el consentimiento informado, disponible junto al computador.
+    </p>
+      <button>Continuar</button>
+      <div class="small-text">
+      Este estudio experimental es realizado por el Laboratorio Experimental Móvil (LEM) del CICS, UDD. Todas las decisiones que tomen serán anónimas y confidenciales, y todas las instrucciones que reciban serán verídicas. Si tienen alguna duda, por favor consulten al equipo de investigación presente en la sala antes de continuar.
+    </div>
+      </div>
+      </body>
+      
+      
+      </html>

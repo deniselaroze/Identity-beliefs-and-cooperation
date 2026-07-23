@@ -1,0 +1,280 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+{{ endblock }}
+
+{{ block content }}
+<header>
+  <h1>Instrucciones Juego Interactivo (Fase III): <br>El Bosque Comunitario</h1>
+</header>
+
+<main>
+  <div class="welcome-box"
+       style="max-width:1150px; margin:0 auto; text-align:justify; line-height:1.6; padding:40px 30px;">
+
+    <div style="text-align:center; margin-bottom:30px;">
+      <svg viewBox="0 0 24 24" style="width:70px; height:70px; color:#2E7D32; margin-bottom:10px;">
+        <path fill="currentColor" d="M12 2L2 14h3v8h14v-8h3L12 2z"/>
+      </svg>
+      <h2 style="color:#2E7D32; margin-top:0; font-size:2rem;">El Terreno Forestal</h2>
+    </div>
+
+    <p style="font-size:1.15rem; text-align:center;">
+      En la actividad principal, el <strong>Juego Interactivo</strong>, interactuarán en vivo
+      con estudiantes de distintas carreras y universidades.
+    </p>
+
+    <hr style="border-top:1px dashed #ccc; margin:30px 0;">
+
+    <h3 style="color:#2A788E; text-align:center; margin-bottom:20px; font-size:1.4rem;">
+      Administrar un Bosque Común
+    </h3>
+
+    <p style="margin-bottom:10px; font-size:1.15rem;">
+      Imagina que tú y otros dos estudiantes son <strong>copropietarios de un terreno forestal</strong>. 
+      Tienen acceso a un bosque común que inicia con <strong>100 hectáreas</strong> de madera cosechable.
+    </p>
+
+    <p style="margin-bottom:10px; font-size:1.15rem;">
+      Interactuarán durante <strong>15 años (rondas)</strong>. Cada año, los 3 copropietarios
+      deciden de forma <strong>individual y privada</strong> cuántas hectáreas de bosque quieren
+      <strong>cosechar</strong>.
+    </p>
+
+    <div style="background-color:#f9f9f9; border-left:5px solid #2A788E;
+                padding:15px 20px; margin:20px 0; border-radius:0 8px 8px 0;">
+      <ul style="margin:0; padding-left:20px;">
+        <li style="margin-bottom:10px; font-size:1.15rem;">
+          Cada uno tiene la infraestructura para <strong>cosechar</strong> un máximo de <strong>10 hectáreas</strong> por año.
+        </li>
+        <li style="font-size:1.15rem;">
+          Cada hectárea de madera cosechada le dará una ganancia de <strong>$60 pesos</strong> reales
+          que se irán acumulando año a año.
+        </li>
+      </ul>
+    </div>
+
+    <hr style="border-top:1px dashed #ccc; margin:30px 0;">
+
+    <h3 style="color:#2E7D32; text-align:center; margin-bottom:15px; font-size:1.4rem;">
+      Sustentabilidad y Regeneración (18%)
+    </h3>
+
+    <p style="text-align:center; font-size:1.15rem; margin-bottom:20px;">
+      El bosque no cosechado se regenera a un ritmo del <strong>18% por año</strong>.
+    </p>
+
+    <div class="legend-box">
+      <div class="legend-item">
+        <div class="legend-color tree-old">
+          <svg viewBox="0 0 24 24" style="width:16px; height:16px;">
+            <path fill="currentColor" d="M12 2L2 14h3v8h14v-8h3L12 2z"/>
+          </svg>
+        </div>
+        Bosque Disponible
+      </div>
+      <div class="legend-item">
+        <div class="legend-color tree-cut"></div>
+        Hectáreas cosechadas
+      </div>
+      <div class="legend-item">
+        <div class="legend-color tree-new">
+          <svg viewBox="0 0 24 24" style="width:16px; height:16px;">
+            <path fill="currentColor" d="M12 2L2 14h3v8h14v-8h3L12 2z"/>
+          </svg>
+        </div>
+        Regeneración (+18%)
+      </div>
+    </div>
+
+    <!-- EJEMPLO 1 -->
+    <div class="question-block"
+         style="border-top:5px solid #5E8C61FF; padding:2rem; background:#fff;
+                border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); margin-bottom:40px;">
+      <h4 style="color:#5E8C61FF; margin-top:0; text-align:center; font-size:1.4rem;">
+        🟢 Ejemplo 1: Cosecha Sustentable en bosque de 100 ha
+      </h4>
+      <p style="text-align:center; font-size:1.15rem; margin-bottom:20px;">
+        En un bosque de 100ha si cada uno <strong>cosecha 5ha</strong> (15 en total), el bosque
+        <strong>regresa a 100ha</strong> el año siguiente.
+      </p>
+      <div class="sequence-container">
+        <div class="step-box">
+          <div id="grid-sust-1" class="forest-grid"></div>
+          <div class="label-area">
+            <span class="step-label">1. Inicio</span>
+            <span class="step-sublabel">100 hectáreas</span>
+          </div>
+        </div>
+        <div class="arrow-box">➔</div>
+        <div class="step-box">
+          <div id="grid-sust-2" class="forest-grid"></div>
+          <div class="label-area">
+            <span class="step-label">2. Cosecha</span>
+            <span class="step-sublabel">-15 (Quedan 85)</span>
+          </div>
+        </div>
+        <div class="arrow-box" style="color:#22A884;">➔</div>
+        <div class="step-box">
+          <div id="grid-sust-3" class="forest-grid"></div>
+          <div class="label-area">
+            <span class="step-label">3. Sig. Año</span>
+            <span class="step-sublabel">Regenera al tope de 100 (85 + 15 de regeneración)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJEMPLO 2 -->
+    <div class="question-block"
+         style="border-top:5px solid #D35400FF; padding:2rem; background:#fff;
+                border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); margin-bottom:40px;">
+      <h4 style="color:#D35400FF; margin-top:0; text-align:center; font-size:1.4rem;">
+        🔴 Ejemplo 2: Cosecha No Sustentable en bosque de 100 ha
+      </h4>
+      <p style="text-align:center; font-size:1.15rem; margin-bottom:20px;">
+        En un bosque de 100ha si cada uno <strong>cosecha 10ha</strong> (30 en total), el bosque
+        <strong>se achica a 82ha</strong> el año siguiente.        
+      </p>
+      <div class="sequence-container">
+        <div class="step-box">
+          <div id="grid-exc-1" class="forest-grid"></div>
+          <div class="label-area">
+            <span class="step-label">1. Inicio</span>
+            <span class="step-sublabel">100 hectáreas</span>
+          </div>
+        </div>
+        <div class="arrow-box">➔</div>
+        <div class="step-box">
+          <div id="grid-exc-2" class="forest-grid"></div>
+          <div class="label-area">
+            <span class="step-label">2. Cosecha</span>
+            <span class="step-sublabel">-30 (Quedan 70)</span>
+          </div>
+        </div>
+        <div class="arrow-box" style="color:#D35400FF;">➔</div>
+        <div class="step-box">
+          <div id="grid-exc-3" class="forest-grid"></div>
+          <div class="label-area">
+            <span class="step-label">3. Sig. Año</span>
+            <span class="step-sublabel">82 hectáreas (70 + 12 de regeneración)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJEMPLO 3 -->
+    <div class="question-block"
+         style="border-top:5px solid #5E8C61FF; padding:2rem; background:#fff;
+                border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); margin-bottom:40px;">
+      <h4 style="color:#5E8C61FF; margin-top:0; text-align:center; font-size:1.4rem;">
+        🟢 Ejemplo 3: Cosecha sustentable en bosque de 82 ha
+      </h4>
+      <p style="text-align:center; font-size:1.15rem; margin-bottom:20px;">
+        En un bosque de 82ha si cada uno <strong>cosecha 4ha</strong> (12 en total), el bosque
+        <strong>se mantiene en 82ha</strong> el año siguiente.
+      </p>
+      <div class="sequence-container">
+        <div class="step-box">
+          <div id="grid-sust82-1" class="forest-grid"></div>
+          <div class="label-area">
+            <span class="step-label">1. Inicio</span>
+            <span class="step-sublabel">82 hectáreas</span>
+          </div>
+        </div>
+        <div class="arrow-box">➔</div>
+        <div class="step-box">
+          <div id="grid-sust82-2" class="forest-grid"></div>
+          <div class="label-area">
+            <span class="step-label">2. Cosecha</span>
+            <span class="step-sublabel">-12 (Quedan 70)</span>
+          </div>
+        </div>
+        <div class="arrow-box" style="color:#22A884;">➔</div>
+        <div class="step-box">
+          <div id="grid-sust82-3" class="forest-grid"></div>
+          <div class="label-area">
+            <span class="step-label">3. Sig. Año</span>
+            <span class="step-sublabel">Se mantiene en 82 (70 + 12 de regeneración)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sequence-container"
+         style="background-color:#fff; border-left:4px solid #D35400FF;
+                margin:20px 0; padding:25px; box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+      <p style="margin:0; font-size:1.15rem;">
+        <strong>¿Qué pasa si el bosque se agota?</strong><br>
+        Si el bosque se reduce a <strong>menos de 30 hectáreas</strong> 
+        no podrá cosechar nuevamente hasta que se regenere por sobre ese umbral.
+      </p>
+    </div>
+
+    <p style="text-align:center; font-weight:bold; margin-top:40px;
+              color:#D35400FF; font-size:1.15rem;">
+      Tus decisiones son privadas.
+    </p>
+
+  </div>
+</main>
+
+<script>
+// Misma lógica que el bosque de Decision1to15_game1: las hectáreas ausentes
+// no se sacan de las esquinas, sino en orden de arriba hacia abajo (índice
+// creciente = fila superior primero).
+function renderGrid(containerId, cfg) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const pine = `<svg viewBox="0 0 24 24" style="width:12px; height:12px;"><path fill="currentColor" d="M12 2L2 14h3v8h14v-8h3L12 2z"/></svg>`;
+
+    const baseMissing  = cfg.baseMissing  || 0;  // ya ausentes antes de esta ronda (bosque < 100)
+    const harvestCount = cfg.harvestCount || 0;  // cosechadas esta ronda
+    const missingAfter = (cfg.missingAfter !== undefined) ? cfg.missingAfter : baseMissing;
+    const stage        = cfg.stage; // 'start' | 'harvest' | 'after'
+
+    let html = '';
+    for (let i = 0; i < 100; i++) {
+        let cls = 'tree-old';
+        let icon = pine;
+
+        if (stage === 'start') {
+            if (i < baseMissing) { cls = 'tree-cut'; icon = ''; }
+        } else if (stage === 'harvest') {
+            if (i < baseMissing + harvestCount) { cls = 'tree-cut'; icon = ''; }
+        } else if (stage === 'after') {
+            if (i < missingAfter) { cls = 'tree-cut'; icon = ''; }
+            else if (i < baseMissing + harvestCount) { cls = 'tree-new'; icon = pine; }
+        }
+        html += `<div class="grid-cell ${cls}">${icon}</div>`;
+    }
+    container.innerHTML = html;
+}
+
+const runSim = () => {
+    // Ejemplo 1: 100ha, se cosechan 15 (5 c/u), regenera de vuelta a 100 (0 quedan ausentes)
+    renderGrid('grid-sust-1', { stage: 'start' });
+    renderGrid('grid-sust-2', { stage: 'harvest', harvestCount: 15 });
+    renderGrid('grid-sust-3', { stage: 'after', harvestCount: 15, missingAfter: 0 });
+
+    // Ejemplo 2: 100ha, se cosechan 30 (10 c/u), queda en 82 (18 no regeneran)
+    renderGrid('grid-exc-1', { stage: 'start' });
+    renderGrid('grid-exc-2', { stage: 'harvest', harvestCount: 30 });
+    renderGrid('grid-exc-3', { stage: 'after', harvestCount: 30, missingAfter: 18 });
+
+    // Ejemplo 3: bosque ya parte en 82ha (18 ausentes), se cosechan 12 (4 c/u), se mantiene en 82
+    renderGrid('grid-sust82-1', { stage: 'start', baseMissing: 18 });
+    renderGrid('grid-sust82-2', { stage: 'harvest', baseMissing: 18, harvestCount: 12 });
+    renderGrid('grid-sust82-3', { stage: 'after', baseMissing: 18, harvestCount: 12, missingAfter: 18 });
+};
+
+if (document.readyState === 'complete') {
+    setTimeout(runSim, 200);
+} else {
+    window.addEventListener('load', runSim);
+    setTimeout(runSim, 800);
+}
+</script>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

@@ -1,0 +1,809 @@
+body {
+  font-family: sans-serif;
+  text-align: justify;
+  background-color: #f9f9f9;
+  width: 100%;
+}
+
+header,
+footer {
+  background-color: rgb(25, 40, 180);
+  color: #f9f9f9;
+  text-align: center;
+  width: 100%;
+  padding: 0rem;
+  align-items: center;
+}
+
+h1 {
+  padding-bottom: 0.3rem;
+  margin-bottom: 1.3rem;
+  width: 100%;
+  text-align: center;
+  color: #f9f9f9;
+}
+
+h2 {
+  padding-bottom: 0.3rem;
+  margin-bottom: 1.3rem;
+  width: 100%;
+  text-align: center;
+  color: #31333F;
+}
+
+p,
+ol,
+.small-text {
+  text-align: justify;
+  color: #333333;
+}
+
+button {
+  padding: 0.8rem 2.2rem;
+  font-size: 1rem;
+  background-color: #5E8C61;
+  color: #f9f9f9;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 2rem auto 0;
+  transition: background 0.2s;
+  display: block;
+  width: fit-content;
+}
+
+button:hover {
+  background-color: #4a7250;
+  color: #f9f9f9;
+}
+
+.welcome-box,
+.decision-box {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  margin: 2rem auto 1rem auto;
+  max-width: 1200px;
+  background-color: #fdfdfd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  text-align: justify;
+}
+
+.icon {
+  width: 58px;
+  height: 58px;
+  display: block;
+  margin: 0 auto 0.5rem auto;
+}
+
+select,
+input[type="number"],
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  margin-bottom: 0.8rem;
+}
+
+select:focus,
+input[type="number"]:focus,
+input[type="text"]:focus,
+textarea:focus {
+  outline: none;
+  border: 2px solid #22A884;
+  box-shadow: 0 0 5px rgba(34, 168, 132, 0.5);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.group-composition {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  margin-bottom: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label {
+  margin-top: 0.5rem;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.summary-line {
+  font-size: 1rem;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #31333F;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin: 0;
+  vertical-align: middle;
+  accent-color: #31333F;
+}
+
+label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  font-weight: normal;
+  text-align: left;
+  color: #333;
+}
+
+form,
+.welcome-box,
+.decision-box,
+.feedback-box {
+  text-align: left;
+}
+
+.iframeObject {
+  width: 100%;
+  max-width: 700px;
+  height: 500px;
+}
+
+.info-box {
+  max-width: 500px;
+  width: 100%;
+  margin: 2rem auto 1rem auto;
+  padding: 1.5rem 2rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fdfdfd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  text-align: justify;
+  flex: 1;
+  min-width: 300px;
+}
+
+.instructions {
+  max-width: 900px;
+  margin: 1.5rem auto;
+  font-family: sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #31333F;
+}
+
+.continueButton {
+  padding: 0.8rem 2.2rem;
+  font-size: 1rem;
+  background-color: #22A884;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 2rem;
+  transition: background 0.2s;
+}
+
+.continueButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.feedback-box {
+  border: 1px solid #ccc;
+  color: #31333F;
+  padding: 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin: 2rem auto 1rem auto;
+  max-width: 800px;
+  background-color: #fdfdfd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  text-align: justify;
+}
+
+#expectationScreenIni {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+}
+
+/* =========================================
+   ESTILOS DE LA TABLA (STRATEGY METHOD)
+   ========================================= */
+.strategy-container {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.strategy-instructions {
+  flex: 1;
+  max-width: 300px;
+  font-size: 0.9rem;
+}
+
+.strategy-table {
+  flex: 2;
+  max-width: 600px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.strategy-table th {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  padding: 0.2rem 0.5rem;
+  text-align: center;
+}
+
+.strategy-table td {
+  padding: 0.15rem;
+  text-align: center;
+  vertical-align: middle;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.strategy-table th, .strategy-table td {
+  width: 50%;
+}
+
+.strategy-table .strategy-input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin: 0;
+  padding: 0.25rem;
+  text-align: center;
+  width: 80px;
+}
+
+.strategy-table thead,
+.strategy-table tbody,
+.strategy-table tr {
+  width: 100%;
+}
+
+.header-instruction {
+  margin-top: 8px;
+  font-weight: normal;
+  font-size: 0.9rem;
+  color: #555;
+  border-top: 1px solid #eee;
+  padding-top: 4px;
+  width: 100%;
+}
+
+.player-header-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 5px;
+}
+
+.player-header-group svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.player-header-group .label {
+  color: inherit;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
+}
+
+/* =========================================
+   GRID Y TARJETAS (GRUPOS E IDENTIDAD)
+   ========================================= */
+#groupIdentificationScreen {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
+  width: 100%;
+  align-items: start;
+}
+
+.player-section {
+  border: 1px solid #ddd;
+  padding: 0.8rem;
+  border-radius: 8px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+
+.player-section h4 {
+  margin-top: 0;
+  color: #2A788E;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.player-section label {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 2px;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.player-section select {
+  margin-bottom: 5px;
+  padding: 4px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  #groupIdentificationScreen { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  #groupIdentificationScreen { grid-template-columns: 1fr; }
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.player-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 1.5rem 1rem;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  transition: transform 0.2s;
+}
+
+.player-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+  width: 100%;
+}
+
+.expectation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+#endQuest {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  #endQuest { grid-template-columns: 1fr; }
+}
+
+.question-block {
+  background-color: #fff;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.question-block p {
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #31333F;
+}
+
+.question-block div {
+  margin-bottom: 0.5rem;
+}
+
+.checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.faculty-group {
+  background: #fdfdfd;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.faculty-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 4px;
+  display: block;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.4rem;
+}
+
+.checkbox-item input {
+  margin-top: 4px;
+  margin-right: 8px;
+  width: auto;
+}
+
+.checkbox-item label {
+  font-size: 0.9rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* =========================================
+   TABLAS MATRIZ (CONFIANZA / EXPECTATIVAS)
+   ========================================= */
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.matrix-table th,
+.matrix-table td {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 4px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.matrix-table td.item-text {
+  text-align: left;
+  width: 45%;
+  padding-right: 15px;
+}
+
+.matrix-table th {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: normal;
+}
+
+.matrix-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.matrix-table tr:has(input[type="radio"]:checked) {
+  background-color: #f0f8ff;
+}
+
+.outgroup-section {
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* =========================================
+   LOGOS DE UNIVERSIDAD (reemplazan a los avatares)
+   ========================================= */
+.uni-logo {
+  display: inline-block;
+  background-color: currentColor;
+  vertical-align: middle;
+  flex-shrink: 0;
+
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+
+.uni-logo.logo-udd    { -webkit-mask-image: url('/static/global/logos/udd.png');    mask-image: url('/static/global/logos/udd.png'); }
+.uni-logo.logo-utalca { -webkit-mask-image: url('/static/global/logos/utalca.svg'); mask-image: url('/static/global/logos/utalca.svg'); }
+.uni-logo.logo-uandes { -webkit-mask-image: url('/static/global/logos/uandes.png'); mask-image: url('/static/global/logos/uandes.png'); }
+.uni-logo.logo-usach  { -webkit-mask-image: url('/static/global/logos/usach.svg');  mask-image: url('/static/global/logos/usach.svg'); }
+
+/* =========================================
+   SELECTOR DE AVATARES (un ícono por carrera)
+   ========================================= */
+.avatar-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.avatar-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  margin: 0;
+  padding: 7px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.15s, background-color 0.15s, color 0.15s, opacity 0.15s;
+}
+
+.avatar-option input { display: none; }
+
+.avatar-option svg { width: 100%; height: 100%; fill: currentColor; }
+
+.avatar-option:hover { border-color: #aaa; }
+
+.avatar-option.is-selected {
+  border-color: #22A884;
+  background: #eafaf3;
+  color: #22A884;
+}
+
+.avatar-option.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   AVATAR COMBINADO: logo de universidad + ícono de carrera
+   ========================================= */
+.combo-avatar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  width: auto !important;
+}
+
+.combo-avatar .uni-logo,
+.combo-avatar .anon-icon {
+  display: block;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+}
+
+.combo-avatar .career-badge {
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  padding: 2px;
+  box-sizing: border-box;
+  background: transparent;
+  border-radius: 22%;
+  fill: currentColor;
+}
+
+/* =========================================
+   SISTEMA DE COLORES - 4 NIVELES DE RELACIÓN
+   ========================================= */
+
+/* 1. YOU (Misma U, Misma Carrera) -> Morado Oscuro */
+.you, .you svg, .you .label, h3.you, h4.you, .player-header-group.you, #label-degree, .faculty-title.you { color: #440154; }
+.group-you { border-left-color: #440154; }
+
+/* 2. NEAR CLOSE (Misma U, Distinta Carrera) -> Azul Medio */
+.nearClose, .nearClose svg, .nearClose .label, h3.nearClose, h4.nearClose, .player-header-group.nearClose, .faculty-title.nearClose { color: #31688E; }
+.group-nearClose { border-left-color: #31688E; }
+
+/* 3. NEAR FAR (Distinta U, Misma Carrera) -> Verde */
+.nearFar, .nearFar svg, .nearFar .label, h3.nearFar, h4.nearFar, .player-header-group.nearFar, .faculty-title.nearFar { color: #35B779; }
+.group-nearFar { border-left-color: #35B779; }
+
+/* 4. FAR (Distinta U, Distinta Carrera) -> Amarillo/Dorado */
+.far, .far svg, .far .label, h3.far, h4.far, .player-header-group.far, .faculty-title.far { color: #D4AC0D; }
+.group-far { border-left-color: #D4AC0D; }
+
+/* 5. ANÓNIMO -> Gris */
+.group-anon { border-left-color: #888; }
+
+/* =========================================
+   CUADRÍCULA DEL BOSQUE
+   ========================================= */
+.forest-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+  width: 275px;
+  height: 300px;
+  margin: 0 auto;
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.grid-cell {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tree-old { background-color: #2E7D32; color: #1B5E20; }
+.tree-new { background-color: #8BC34A; color: #558B2F; }
+.tree-cut { background-color: #ffffff; border: 0.5px solid #e0e0e0; box-sizing: border-box; }
+
+.legend-box {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  color: #444;
+}
+
+.legend-color {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================
+   CONTENEDORES DE SECUENCIA
+   ========================================= */
+.sequence-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 30px 0;
+  flex-wrap: nowrap;
+}
+
+.step-box {
+  flex: 0 0 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.arrow-box {
+  font-weight: bold;
+  font-size: 2.5rem;
+  color: #ddd;
+  padding-top: 85px;
+}
+
+.label-area {
+  margin-top: 15px;
+  line-height: 1.3;
+}
+
+.step-label {
+  font-weight: bold;
+  font-size: 1.1rem;
+  display: block;
+  color: #333;
+}
+
+.step-sublabel {
+  color: #666;
+  font-size: 0.95rem;
+  display: block;
+}
+
+/* Ocultar flechas nativas del input number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* =========================================
+   TABLA HÍBRIDA (STRATEGY METHOD)
+   ========================================= */
+.hybrid-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.hybrid-table th {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.hybrid-table td {
+  border: 1px solid #ddd;
+  padding: 10px 4px;
+  text-align: center;
+  position: relative;
+}
+
+.hybrid-table .scen-label {
+  background: #f5f9fa;
+  font-weight: bold;
+  text-align: left;
+  padding: 10px 15px;
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+
+/* Clases para animación del desbloqueo progresivo */
+.dynamic-input {
+  transition: border 0.2s ease, background-color 0.2s ease;
+}
+
+.dynamic-input:disabled {
+  cursor: not-allowed;
+  background-color: #f1f1f1 !important;
+  color: #888;
+  border-color: #ddd !important;
+}

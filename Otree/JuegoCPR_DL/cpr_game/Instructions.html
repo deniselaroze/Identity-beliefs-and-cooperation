@@ -1,0 +1,29 @@
+{{ block styles }}<link rel="stylesheet" href="/static/global/styles.css">{{ endblock }}
+{{ block content }}
+
+<header>
+  <h1>Comienza la Etapa 1</h1>
+</header>
+
+<div class="welcome-box" style="width:100%;max-width:1000px;box-sizing:border-box;margin:40px auto;text-align:center;line-height:1.6;padding:50px 30px;">
+
+  <svg viewBox="0 0 24 24" style="width:80px;height:80px;color:#2A788E;margin-bottom:20px;">
+    <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v2h-2v-2zm0-10h2v8h-2V7z"/>
+  </svg>
+
+  <h2 style="color:#31333F;font-size:1.8rem;margin-top:0;margin-bottom:20px;">¡Todo listo para empezar!</h2>
+
+  <p style="font-size:1.2rem;margin-bottom:20px;color:#333; text-align: center;">
+    Ahora comenzará la <strong>Etapa 1</strong> de la sesión.
+  </p>
+
+  <div class="info-box" style="background-color:#EAF3F5;margin:0 auto;padding:20px;width:100%;box-sizing:border-box;text-align:left;box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+    <p style="margin:0;font-size:1.1rem;">
+      A partir de este momento, <strong>todas sus decisiones</strong> (expectativas, estrategias y uso en el juego interactivo) <strong>podrán ser seleccionadas para calcular su pago final</strong> de la sesión.
+    </p>
+  </div>
+
+</div>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

@@ -1,0 +1,46 @@
+{% extends "otree/Page.html" %}
+{% load otree static %}
+
+{% block global_styles  %}
+{% endblock %}
+
+{% block global_scripts  %}
+<script>
+/* Reemplaza los mensajes de validación HTML5 del navegador con texto en español */
+document.addEventListener('invalid', function (e) {
+  var el = e.target;
+  el.setCustomValidity('');  /* reinicia antes de evaluar */
+  if (!el.validity.valid) {
+    var msg = '';
+    var tipo = el.type ? el.type.toLowerCase() : '';
+    if (el.validity.valueMissing) {
+      if (tipo === 'checkbox')      msg = 'Por favor marca esta casilla para continuar.';
+      else if (tipo === 'radio')    msg = 'Por favor selecciona una opción.';
+      else if (el.tagName === 'SELECT') msg = 'Por favor selecciona una opción.';
+      else                          msg = 'Por favor completa este campo.';
+    } else if (el.validity.rangeUnderflow) {
+      msg = 'El valor debe ser mayor o igual a ' + el.min + '.';
+    } else if (el.validity.rangeOverflow) {
+      msg = 'El valor debe ser menor o igual a ' + el.max + '.';
+    } else if (el.validity.stepMismatch) {
+      msg = 'Por favor ingresa un número entero válido.';
+    } else if (el.validity.typeMismatch) {
+      msg = 'Por favor ingresa un valor en el formato correcto.';
+    } else if (el.validity.tooShort) {
+      msg = 'El texto es demasiado corto (mínimo ' + el.minLength + ' caracteres).';
+    } else {
+      msg = 'Por favor revisa este campo.';
+    }
+    el.setCustomValidity(msg);
+  }
+}, true);
+
+/* Limpia el mensaje personalizado cuando el usuario edita el campo */
+document.addEventListener('input', function (e) {
+  e.target.setCustomValidity('');
+}, true);
+document.addEventListener('change', function (e) {
+  e.target.setCustomValidity('');
+}, true);
+</script>
+{% endblock %}

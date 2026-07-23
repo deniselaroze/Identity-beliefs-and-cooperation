@@ -1,0 +1,42 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+{{ endblock }}
+
+{{ block content }}
+<header>
+  <h1>Instrucciones: Sus Expectativas (Fase I)</h1>
+</header>
+
+<main>
+  <div class="welcome-box"
+       style="max-width:1000px; margin:0 auto; text-align:justify; line-height:1.6;
+              font-size:1.1rem; padding:40px 30px;">
+
+    <p>
+      Antes de iniciar el juego interactivo les preguntaremos
+      <strong>sus expectativas</strong> sobre el comportamiento de los demás.
+    </p>
+
+    <p>
+      En esta primera fase (Fase I), les mostraremos los perfiles (carrera y universidad)
+      de distintos estudiantes reales que están conectados a esta sesión. Para cada uno
+      de ellos, les pediremos que estimen <strong>la cantidad de hectáreas que cosecharán,
+      en promedio, en la primera ronda del juego interactivo.</strong>
+    </p>
+
+    <div class="info-box"
+         style="background-color:#EAF3F5; margin:30px auto; padding:20px;
+                width:100%; max-width:100%; box-sizing:border-box; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+      <p style="margin:0;">
+        <strong>Consideración importante:</strong><br>
+        En la primera ronda del juego interactivo (Fase III), cada persona decidirá en privado
+        y podrá elegir cosechar <strong>cualquier número entero entre 0 y 10 ha</strong>
+        de las 100 ha con las cuales inicia el bosque.
+      </p>
+    </div>
+
+  </div>
+</main>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

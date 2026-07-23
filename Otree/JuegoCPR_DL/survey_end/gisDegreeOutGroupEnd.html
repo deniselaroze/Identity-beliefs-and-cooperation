@@ -1,0 +1,203 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+<style>
+  .matrix-table td.item-text { width:55% !important; }
+  .gis-radio { transform:scale(1.2); cursor:pointer; }
+  .gis-row:hover { background-color:#f5f9fa; }
+  .og-profile-block { margin-bottom:40px; }
+  .og-profile-block:not(:last-child) {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 30px;
+  }
+</style>
+{{ endblock }}
+
+{{ block content }}
+
+<!-- Sprite de íconos de carrera (avatar combinado: logo universidad + ícono) -->
+<svg style="display:none">
+  <symbol id="av-1" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/></symbol>
+  <symbol id="av-2" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="currentColor"/></symbol>
+  <symbol id="av-3" viewBox="0 0 64 64"><polygon points="32,4 60,32 32,60 4,32" fill="currentColor"/></symbol>
+  <symbol id="av-4" viewBox="0 0 64 64"><polygon points="32,4 62,60 2,60" fill="currentColor"/></symbol>
+  <symbol id="av-5" viewBox="0 0 64 64"><polygon points="32,4 59,22 49,54 15,54 5,22" fill="currentColor"/></symbol>
+  <symbol id="av-6" viewBox="0 0 64 64"><polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="currentColor"/></symbol>
+  <symbol id="av-7" viewBox="0 0 64 64"><polygon points="32,4 38,24 60,24 43,37 49,58 32,45 15,58 21,37 4,24 26,24" fill="currentColor"/></symbol>
+  <symbol id="av-8" viewBox="0 0 64 64"><rect x="24" y="2" width="16" height="60" fill="currentColor"/><rect x="2" y="24" width="60" height="16" fill="currentColor"/></symbol>
+  <symbol id="av-9" viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="30" ry="18" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <h1>Identidad con Otros Grupos</h1>
+</header>
+
+<main>
+  <div class="welcome-box" style="width:95%; max-width:1400px; margin:0 auto;">
+
+    <p style="text-align:center; margin-bottom:2rem; font-size:1.05rem;">
+      Pensando en las personas con las que interactuaste en el juego, indica tu nivel
+      de acuerdo o desacuerdo con las siguientes afirmaciones:
+    </p>
+
+    <input type="hidden" name="gis_outgroup_end_json" id="gis_outgroup_end_json">
+
+    <div id="matrices-container"></div>
+
+    <div id="og-error"
+         style="display:none; color:#dc3545; text-align:center; margin-top:15px; font-weight:bold;
+                padding:10px; background:#faece6; border-radius:6px; border:1px solid #f2d0c2;">
+      Por favor, responde todas las afirmaciones antes de continuar.
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  var GROUPS = {{ groups_json }};
+  var OUT_GROUPS = GROUPS;
+
+  var UNI_LOGO_CLASS = {
+    UDD:'logo-udd', UTalca:'logo-utalca', UAndes:'logo-uandes', USACH:'logo-usach'
+  };
+
+  var SCALE = [1,2,3,4,5,6,7,8,9];
+  var ITEM_COUNT = 9;
+
+  function buildItems(g) {
+    if (g.relation === 'anon') {
+      return [
+        'Me identifico con tu compañero/a anónimo/a de equipo.',
+        'Me alegra que tu compañero/a anónimo/a de equipo haya estado en tu equipo.',
+        'Siento que tener a tu compañero/a anónimo/a de equipo me frena o limita.',
+        'Creo que tú y tu compañero/a anónimo/a de equipo funcionamos bien juntos.',
+        'Considero que tu compañero/a anónimo/a de equipo fue una parte importante de tu experiencia.',
+        'No encajo bien con tu compañero/a anónimo/a de equipo.',
+        'No considero que tu compañero/a anónimo/a de equipo haya sido importante.',
+        'Me siento incómodo/a con tu compañero/a anónimo/a de equipo.',
+        'Siento fuertes lazos con tu compañero/a anónimo/a de equipo.'
+      ];
+    }
+    var x = g.degree + ' en la ' + g.university;
+    return [
+      'Me identifico con los/as estudiantes de ' + x + '.',
+      'Me alegra pertenecer a la carrera de ' + x + '.',
+      'Siento que pertenecer a la carrera de ' + x + ' me frena o limita.',
+      'Creo que los estudiantes de ' + x + ' funcionamos bien juntos.',
+      'Me considero una parte importante de la carrera ' + x + '.',
+      'No encajo bien con los demás estudiantes de ' + x + '.',
+      'No considero que mi grupo de ' + x + ' sea importante.',
+      'Me siento incómodo/a con los estudiantes de ' + x + '.',
+      'Siento fuertes lazos con los estudiantes de ' + x + '.'
+    ];
+  }
+
+  function buildMatrices() {
+    var container = document.getElementById('matrices-container');
+    if (!OUT_GROUPS.length) {
+      container.innerHTML = '<p style="text-align:center;color:#888;padding:20px;">No hay otros perfiles disponibles.</p>';
+      return;
+    }
+
+    var html = '';
+    OUT_GROUPS.forEach(function (g) {
+      var isAnon  = g.relation === 'anon';
+      var relCls  = isAnon ? '' : g.relation;
+      var logoCls = isAnon ? '' : (UNI_LOGO_CLASS[g.university] || '');
+      var safe    = g.key.replace(/[^a-zA-Z0-9]/g, '_');
+
+      html += '<div class="og-profile-block">';
+
+      /* Cabecera del perfil: mismo formato que GisDegree.html */
+      html += '<div style="text-align:center; margin-bottom:2rem;">';
+      html += '<div style="display:inline-flex; flex-direction:column; align-items:center; gap:10px; margin-top:15px;">';
+      var badge = g.icon
+        ? '<svg class="career-badge ' + (isAnon ? '' : relCls) + '" viewBox="0 0 64 64"><use href="#av-' + g.icon + '"></use></svg>'
+        : '';
+      if (isAnon) {
+        html += '<span class="combo-avatar" style="width:80px;height:80px;color:#888;">' +
+          '<svg class="anon-icon" viewBox="0 0 64 64">' +
+            '<circle cx="32" cy="20" r="11" fill="currentColor"/>' +
+            '<path d="M10,60 Q10,38 32,38 Q54,38 54,60 Z" fill="currentColor"/></svg>' +
+          badge + '</span>';
+        html += '<strong style="color:#888; font-size:1.2rem;">Estudiante Anónimo</strong>';
+      } else {
+        html += '<span class="combo-avatar ' + relCls + '" style="width:80px; height:80px;">' +
+          '<span class="uni-logo ' + logoCls + '"></span>' + badge + '</span>';
+        html += '<strong class="' + relCls + '" style="font-size:1.2rem;">' + g.degree + ' en la ' + g.university + '</strong>';
+      }
+      html += '</div></div>';
+
+      /* Tabla de ítems: mismo formato que GisDegree.html */
+      html += '<table class="matrix-table" style="width:100%; border-collapse:collapse; table-layout:fixed;">';
+      html += '<thead><tr>';
+      html += '<th style="width:45%;"></th>';
+      html += '<th colspan="4" style="text-align:left; font-weight:normal; color:#555;">Totalmente en desacuerdo</th>';
+      html += '<th></th>';
+      html += '<th colspan="4" style="text-align:right; font-weight:normal; color:#555;">Totalmente de acuerdo</th>';
+      html += '</tr><tr><th></th>';
+      SCALE.forEach(function (v) {
+        html += '<th style="text-align:center; width:calc(55% / 9);">' + v + '</th>';
+      });
+      html += '</tr></thead><tbody>';
+
+      buildItems(g).forEach(function (item, idx) {
+        var itemNum = idx + 1;
+        html += '<tr class="gis-row">';
+        html += '<td class="item-text" style="padding:12px 8px;">' + item + '</td>';
+        SCALE.forEach(function (v) {
+          html += '<td style="text-align:center; padding:10px 4px;">' +
+                    '<input class="gis-radio" type="radio" name="gis_og_' + safe + '_' + itemNum + '" value="' + v + '" required>' +
+                  '</td>';
+        });
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      html += '</div>';
+    });
+
+    container.innerHTML = html;
+  }
+
+  buildMatrices();
+
+  function handleSubmit(e) {
+    var result    = {};
+    var allFilled = true;
+
+    OUT_GROUPS.forEach(function (g) {
+      var safe = g.key.replace(/[^a-zA-Z0-9]/g, '_');
+      result[g.key] = {};
+      for (var item = 1; item <= ITEM_COUNT; item++) {
+        var name    = 'gis_og_' + safe + '_' + item;
+        var checked = document.querySelector('input[name="' + name + '"]:checked');
+        if (checked) {
+          result[g.key][item] = parseInt(checked.value);
+        } else {
+          allFilled = false;
+        }
+      }
+    });
+
+    if (!allFilled) {
+      e.preventDefault();
+      var errEl = document.getElementById('og-error');
+      errEl.style.display = 'block';
+      errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return false;
+    }
+    document.getElementById('og-error').style.display = 'none';
+    document.getElementById('gis_outgroup_end_json').value = JSON.stringify(result);
+  }
+
+  window.addEventListener('load', function () {
+    var form = document.getElementById('form');
+    if (form) form.addEventListener('submit', handleSubmit);
+  });
+})();
+</script>
+
+<button type="submit">Continuar</button>
+
+{{ endblock }}

@@ -1,0 +1,189 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+{{ endblock }}
+
+{{ block content }}
+
+<!-- Sprite de íconos de carrera (avatar combinado: logo universidad + ícono) -->
+<svg style="display:none">
+  <symbol id="av-1" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/></symbol>
+  <symbol id="av-2" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="currentColor"/></symbol>
+  <symbol id="av-3" viewBox="0 0 64 64"><polygon points="32,4 60,32 32,60 4,32" fill="currentColor"/></symbol>
+  <symbol id="av-4" viewBox="0 0 64 64"><polygon points="32,4 62,60 2,60" fill="currentColor"/></symbol>
+  <symbol id="av-5" viewBox="0 0 64 64"><polygon points="32,4 59,22 49,54 15,54 5,22" fill="currentColor"/></symbol>
+  <symbol id="av-6" viewBox="0 0 64 64"><polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="currentColor"/></symbol>
+  <symbol id="av-7" viewBox="0 0 64 64"><polygon points="32,4 38,24 60,24 43,37 49,58 32,45 15,58 21,37 4,24 26,24" fill="currentColor"/></symbol>
+  <symbol id="av-8" viewBox="0 0 64 64"><rect x="24" y="2" width="16" height="60" fill="currentColor"/><rect x="2" y="24" width="60" height="16" fill="currentColor"/></symbol>
+  <symbol id="av-9" viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="30" ry="18" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <h1>Identidad con su Carrera</h1>
+</header>
+
+<main>
+  <style>
+    .matrix-table td.item-text { width:55% !important; }
+    .gis-radio { transform:scale(1.2); cursor:pointer; }
+    .gis-row:hover { background-color:#f5f9fa; }
+  </style>
+
+  <div class="welcome-box" style="width:95%; max-width:1400px; margin:0 auto;">
+
+    <div style="text-align:center; margin-bottom:2rem;">
+      <p>Por favor, indiquen su nivel de acuerdo o desacuerdo con las siguientes
+         afirmaciones sobre su relación con la carrera de:</p>
+      <div style="display:inline-flex; flex-direction:column; align-items:center; gap:10px; margin-top:15px;">
+        <span class="combo-avatar" style="width:80px; height:80px;">
+          <span class="uni-logo {{ my_logo_class }} you"></span>
+          {{ if my_icon_id }}
+          <svg class="career-badge you" viewBox="0 0 64 64"><use href="#av-{{ my_icon_id }}"></use></svg>
+          {{ endif }}
+        </span>
+        <strong class="you" style="font-size:1.2rem;">{{ my_degree }} en la {{ my_university }}</strong>
+      </div>
+    </div>
+
+    <table class="matrix-table" style="width:100%; border-collapse:collapse; table-layout:fixed;">
+      <thead>
+        <tr>
+          <th style="width:45%;"></th>
+          <th colspan="4" style="text-align:left; font-weight:normal; color:#555;">
+            Totalmente en desacuerdo
+          </th>
+          <th></th>
+          <th colspan="4" style="text-align:right; font-weight:normal; color:#555;">
+            Totalmente de acuerdo
+          </th>
+        </tr>
+        <tr>
+          <th></th>
+          <th style="text-align:center; width:calc(55% / 9);">1</th>
+          <th style="text-align:center; width:calc(55% / 9);">2</th>
+          <th style="text-align:center; width:calc(55% / 9);">3</th>
+          <th style="text-align:center; width:calc(55% / 9);">4</th>
+          <th style="text-align:center; width:calc(55% / 9);">5</th>
+          <th style="text-align:center; width:calc(55% / 9);">6</th>
+          <th style="text-align:center; width:calc(55% / 9);">7</th>
+          <th style="text-align:center; width:calc(55% / 9);">8</th>
+          <th style="text-align:center; width:calc(55% / 9);">9</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Ítem 1 -->
+        <tr class="gis-row">
+          <td class="item-text" style="padding:12px 8px;">
+            Me identifico con los/as estudiantes de {{ my_degree }} en la {{ my_university }}.
+          </td>
+          {{ for v in [1,2,3,4,5,6,7,8,9] }}
+          <td style="text-align:center; padding:10px 4px;">
+            <input class="gis-radio" type="radio" name="gis_1" value="{{ v }}" required>
+          </td>
+          {{ endfor }}
+        </tr>
+
+        <!-- Ítem 2 -->
+        <tr class="gis-row">
+          <td class="item-text" style="padding:12px 8px;">
+            Me alegra pertenecer a la carrera de {{ my_degree }} en la {{ my_university }}.
+          </td>
+          {{ for v in [1,2,3,4,5,6,7,8,9] }}
+          <td style="text-align:center; padding:10px 4px;">
+            <input class="gis-radio" type="radio" name="gis_2" value="{{ v }}" required>
+          </td>
+          {{ endfor }}
+        </tr>
+
+        <!-- Ítem 3 -->
+        <tr class="gis-row">
+          <td class="item-text" style="padding:12px 8px;">
+            Siento que pertenecer a la carrera de {{ my_degree }} en la {{ my_university }} me frena o limita.
+          </td>
+          {{ for v in [1,2,3,4,5,6,7,8,9] }}
+          <td style="text-align:center; padding:10px 4px;">
+            <input class="gis-radio" type="radio" name="gis_3" value="{{ v }}" required>
+          </td>
+          {{ endfor }}
+        </tr>
+
+        <!-- Ítem 4 -->
+        <tr class="gis-row">
+          <td class="item-text" style="padding:12px 8px;">
+            Creo que los estudiantes de {{ my_degree }} en la {{ my_university }} funcionamos bien juntos.
+          </td>
+          {{ for v in [1,2,3,4,5,6,7,8,9] }}
+          <td style="text-align:center; padding:10px 4px;">
+            <input class="gis-radio" type="radio" name="gis_4" value="{{ v }}" required>
+          </td>
+          {{ endfor }}
+        </tr>
+
+        <!-- Ítem 5 -->
+        <tr class="gis-row">
+          <td class="item-text" style="padding:12px 8px;">
+            Me considero una parte importante de la carrera {{ my_degree }} en la {{ my_university }}.
+          </td>
+          {{ for v in [1,2,3,4,5,6,7,8,9] }}
+          <td style="text-align:center; padding:10px 4px;">
+            <input class="gis-radio" type="radio" name="gis_5" value="{{ v }}" required>
+          </td>
+          {{ endfor }}
+        </tr>
+
+        <!-- Ítem 6 -->
+        <tr class="gis-row">
+          <td class="item-text" style="padding:12px 8px;">
+            No encajo bien con los demás estudiantes de {{ my_degree }} en la {{ my_university }}.
+          </td>
+          {{ for v in [1,2,3,4,5,6,7,8,9] }}
+          <td style="text-align:center; padding:10px 4px;">
+            <input class="gis-radio" type="radio" name="gis_6" value="{{ v }}" required>
+          </td>
+          {{ endfor }}
+        </tr>
+
+        <!-- Ítem 7 -->
+        <tr class="gis-row">
+          <td class="item-text" style="padding:12px 8px;">
+            No considero que mi grupo de {{ my_degree }} en la {{ my_university }} sea importante.
+          </td>
+          {{ for v in [1,2,3,4,5,6,7,8,9] }}
+          <td style="text-align:center; padding:10px 4px;">
+            <input class="gis-radio" type="radio" name="gis_7" value="{{ v }}" required>
+          </td>
+          {{ endfor }}
+        </tr>
+
+        <!-- Ítem 8 -->
+        <tr class="gis-row">
+          <td class="item-text" style="padding:12px 8px;">
+            Me siento incómodo/a con los estudiantes de {{ my_degree }} en la {{ my_university }}.
+          </td>
+          {{ for v in [1,2,3,4,5,6,7,8,9] }}
+          <td style="text-align:center; padding:10px 4px;">
+            <input class="gis-radio" type="radio" name="gis_8" value="{{ v }}" required>
+          </td>
+          {{ endfor }}
+        </tr>
+
+        <!-- Ítem 9 -->
+        <tr class="gis-row">
+          <td class="item-text" style="padding:12px 8px;">
+            Siento fuertes lazos con los estudiantes de {{ my_degree }} en la {{ my_university }}.
+          </td>
+          {{ for v in [1,2,3,4,5,6,7,8,9] }}
+          <td style="text-align:center; padding:10px 4px;">
+            <input class="gis-radio" type="radio" name="gis_9" value="{{ v }}" required>
+          </td>
+          {{ endfor }}
+        </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+</main>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

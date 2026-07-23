@@ -1,0 +1,108 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+<style>
+  .radio-option {
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    padding: 8px 12px; border-radius: 6px; transition: background 0.15s;
+  }
+  .radio-option:hover { background: #f5f9fa; }
+  .radio-option input[type="radio"] { transform: scale(1.2); cursor: pointer; flex-shrink: 0; }
+  .year-chip {
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+    padding: 7px 14px; border: 1px solid #ddd; border-radius: 20px;
+    background: #f9f9f9; transition: background 0.15s, border-color 0.15s;
+  }
+  .year-chip:hover { background: #eef4f7; border-color: #2A788E; }
+  .year-chip input[type="radio"] { transform: scale(1.15); cursor: pointer; }
+</style>
+{{ endblock }}
+
+{{ block content }}
+
+<header>
+  <h1>Cuestionario de cierre</h1>
+</header>
+
+<main>
+  <div class="welcome-box" style="max-width:800px; margin:0 auto; line-height:1.8;">
+
+    <div class="question-block">
+      <p style="font-weight:bold; margin-bottom:0.8rem; font-size:1.05rem;">¿Cómo te describes a ti mismo/a?</p>
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <label class="radio-option">
+          <input type="radio" name="gender" value="masculino">
+          <span>Masculino</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="gender" value="femenino">
+          <span>Femenino</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="gender" value="prefiero no decir">
+          <span>Prefiero no decir</span>
+        </label>
+        <label class="radio-option" style="flex-wrap:wrap; gap:8px;">
+          <input type="radio" name="gender" value="autoDescripcion" id="gender-auto">
+          <span>Prefiero auto describirme:</span>
+          <input type="text" name="gender_text" id="gender_text"
+                 placeholder="Especifique..."
+                 style="border:1px solid #ccc; border-radius:4px; padding:5px 10px; font-size:0.95rem;" disabled>
+        </label>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <p style="font-weight:bold; margin-bottom:0.8rem; font-size:1.05rem;">¿En qué año de tu carrera estás?</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <label class="year-chip"><input type="radio" name="year_study" value="1"><span>1° año</span></label>
+        <label class="year-chip"><input type="radio" name="year_study" value="2"><span>2° año</span></label>
+        <label class="year-chip"><input type="radio" name="year_study" value="3"><span>3° año</span></label>
+        <label class="year-chip"><input type="radio" name="year_study" value="4"><span>4° año</span></label>
+        <label class="year-chip"><input type="radio" name="year_study" value="5"><span>5° año</span></label>
+        <label class="year-chip"><input type="radio" name="year_study" value="6"><span>6° año</span></label>
+        <label class="year-chip"><input type="radio" name="year_study" value="7+"><span>7° año o más</span></label>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <p style="font-weight:bold; margin-bottom:0.8rem; font-size:1.05rem;">Indica tu edad:</p>
+      <select name="age"
+              style="padding:8px 14px; border:1px solid #ccc; border-radius:6px; font-size:1rem; min-width:200px;">
+        <option value="" disabled selected>Seleccione...</option>
+        <option value="18">18 años</option>
+        <option value="19">19 años</option>
+        <option value="20">20 años</option>
+        <option value="21">21 años</option>
+        <option value="22">22 años</option>
+        <option value="23">23 años</option>
+        <option value="24">24 años</option>
+        <option value="25">25 años</option>
+        <option value="26">26 años</option>
+        <option value="27">27 años</option>
+        <option value="28">28 años</option>
+        <option value="29">29 años</option>
+        <option value="30">30 años</option>
+        <option value="30+">Más de 30 años</option>
+      </select>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  var autoRadio  = document.getElementById('gender-auto');
+  var genderText = document.getElementById('gender_text');
+
+  document.querySelectorAll('input[name="gender"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      genderText.disabled = (this.value !== 'autoDescripcion');
+      if (genderText.disabled) genderText.value = '';
+    });
+  });
+})();
+</script>
+
+<button type="submit">Continuar</button>
+
+{{ endblock }}

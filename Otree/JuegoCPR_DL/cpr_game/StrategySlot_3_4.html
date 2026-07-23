@@ -1,0 +1,379 @@
+{{ block styles }}<link rel="stylesheet" href="/static/global/styles.css">{{ endblock }}
+{{ block content }}
+
+<!-- Sprite de íconos de carrera (avatar combinado: logo universidad + ícono) -->
+<svg style="display:none">
+  <symbol id="av-1" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/></symbol>
+  <symbol id="av-2" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="currentColor"/></symbol>
+  <symbol id="av-3" viewBox="0 0 64 64"><polygon points="32,4 60,32 32,60 4,32" fill="currentColor"/></symbol>
+  <symbol id="av-4" viewBox="0 0 64 64"><polygon points="32,4 62,60 2,60" fill="currentColor"/></symbol>
+  <symbol id="av-5" viewBox="0 0 64 64"><polygon points="32,4 59,22 49,54 15,54 5,22" fill="currentColor"/></symbol>
+  <symbol id="av-6" viewBox="0 0 64 64"><polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="currentColor"/></symbol>
+  <symbol id="av-7" viewBox="0 0 64 64"><polygon points="32,4 38,24 60,24 43,37 49,58 32,45 15,58 21,37 4,24 26,24" fill="currentColor"/></symbol>
+  <symbol id="av-8" viewBox="0 0 64 64"><rect x="24" y="2" width="16" height="60" fill="currentColor"/><rect x="2" y="24" width="60" height="16" fill="currentColor"/></symbol>
+  <symbol id="av-9" viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="30" ry="18" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <h1>Fase II. Decisiones Estratégicas</h1>
+</header>
+
+<div style="max-width:1350px;margin:0 auto;padding:20px;">
+  <div class="welcome-box" style="width:100%;box-sizing:border-box;margin:10px auto;padding:30px;line-height:1.5;font-size:1.1rem;">
+
+    <p style="text-align:center;margin-bottom:25px;">
+      Para esta fase, te pedimos que nos indiques tus decisiones frente a
+      <strong>diferentes escenarios de recursos disponibles.</strong>
+    </p>
+
+    <div class="info-box" style="background-color:#EAF3F5;margin:0 auto 20px auto;padding:20px;width:100%;max-width:1050px;box-sizing:border-box;border-left:5px solid #2A788E;border-radius:6px;">
+      <p style="margin:0;text-align:center;">
+        {% if variant == 'noinfo' %}
+        Asume que en este escenario tu equipo está compuesto por ti y otras dos personas
+        (en este caso <strong>anónimas</strong>).<br>
+        La tabla te permite indicar tu decisión de cosecha para cada nivel del bosque combinado
+        con el uso promedio de los demás.
+        {% else %}
+        Ahora asume que tu equipo está compuesto por ti y las siguientes dos personas
+        que también participan en la sesión.<br>
+        La tabla te permite indicar tu decisión para cada nivel del bosque en combinación
+        con el uso promedio de los demás.
+        {% endif %}
+      </p>
+      <p style="margin:15px 0 0 0;text-align:center;font-size:1.15rem;color:#2A788E;">
+        <strong>¿Cuántas hectáreas cosecharías tú (entre 0 y 10) en cada escenario?</strong>
+      </p>
+      <p style="margin:10px 0 0 0;text-align:center;font-size:0.9rem;color:#555;">
+        <em>*Las columnas aparecerán de izquierda a derecha conforme completes la anterior.</em>
+      </p>
+    </div>
+
+    <div id="dynamic-table-container" style="width:100%;overflow-x:auto;padding-bottom:20px;"></div>
+
+    <div id="error-msg" style="display:none;color:#dc3545;text-align:center;margin-top:15px;font-weight:bold;padding:10px;background:#faece6;border-radius:6px;border:1px solid #f2d0c2;">
+      Por favor, completa todas las casillas habilitadas con números enteros válidos (entre 0 y 10).
+    </div>
+
+    <input type="hidden" name="{{ field_name }}" id="strategy_hidden_field">
+
+    <div style="background-color:#fdfaf6;border:1px solid #ddd;border-left:5px solid #28a745;margin:20px auto 10px auto;padding:20px;width:100%;max-width:1050px;box-sizing:border-box;border-radius:6px;">
+      <h3 style="color:#28a745;margin-top:0;margin-bottom:10px;font-size:1.15rem;">Recordatorio: Regeneración y Sustentabilidad</h3>
+      <p style="margin-top:0;margin-bottom:15px;text-align:justify;">
+        El bosque se regenera en un <strong>18% de lo que no se utiliza</strong>.
+        Para que el bosque no se siga achicando, el consumo total del grupo no debe
+        superar dicha regeneración:
+      </p>
+      <ul style="margin:0;padding-left:20px;line-height:1.6;">
+        <li style="margin-bottom:8px;"><strong>Si el bosque es de 100 ha:</strong> cosecha máxima sustentable individual = <strong>5 ha</strong></li>
+        <li style="margin-bottom:8px;"><strong>Si el bosque tiene 75 ha:</strong> cosecha máxima sustentable individual = <strong>3 ha</strong></li>
+        <li><strong>Si el bosque tiene 50 ha:</strong> cosecha máxima sustentable individual = <strong>2 ha</strong></li>
+      </ul>
+      <p style="margin-top:15px;margin-bottom:0;font-size:0.95rem;color:#555;">
+        <em>El <strong>"Total grupo"</strong> se pondrá
+        <span style="color:#28a745;font-weight:bold;">verde</span> si la cosecha es sostenible,
+        o <span style="color:#dc3545;font-weight:bold;">rojo</span> si achicaría el bosque.</em>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var GROUPS     = {{ groups_json }};
+  var FIELD_NAME = "{{ field_name }}";
+
+  var UNI_LOGO_CLASS = {
+    UDD:'logo-udd', UTalca:'logo-utalca', UAndes:'logo-uandes', USACH:'logo-usach'
+  };
+
+  /* Avatar del compañero: logo de su universidad + ícono de su carrera, o
+     silueta genérica + ícono "anónimo" si no se conoce identidad */
+  function buildIcon(university, relation, sizePx, icon) {
+    var isAnon = !university || relation === 'anon';
+    var size = 'width:' + sizePx + 'px;height:' + sizePx + 'px;' + (isAnon ? 'color:#888;' : '');
+    var base = isAnon
+      ? '<svg class="anon-icon" viewBox="0 0 64 64">' +
+          '<circle cx="32" cy="20" r="11" fill="currentColor"/>' +
+          '<path d="M10,60 Q10,38 32,38 Q54,38 54,60 Z" fill="currentColor"/></svg>'
+      : '<span class="uni-logo ' + (UNI_LOGO_CLASS[university] || '') + '"></span>';
+    var badge = icon
+      ? '<svg class="career-badge" viewBox="0 0 64 64"><use href="#av-' + icon + '"></use></svg>'
+      : '';
+    /* la clase de relación va en el wrapper para que el color se herede tanto
+       al logo (currentColor) como a la insignia de carrera (fill:currentColor) */
+    return '<span class="combo-avatar ' + relation + '" style="' + size + '">' + base + badge + '</span>';
+  }
+
+  // Rows: average extraction by the other 2 players
+  var SCENARIOS = [
+    { id: 5,  label: '5 ha',  meanOthers: 5  },
+    { id: 7,  label: '7 ha',  meanOthers: 7  },
+    { id: 9,  label: '9 ha',  meanOthers: 9  },
+    { id: 10, label: '10 ha', meanOthers: 10 }
+  ];
+  // Columns: pool levels (unlock left to right)
+  var STOCKS = [100, 75, 50];
+
+  function maxSustainable(stock) {
+    return Math.floor(stock * 0.18 / 1.18);
+  }
+
+  function stockStyle(stock) {
+    if (stock >= 85) return { bg: '#d4edda', text: '#155724', border: '#28a745' };
+    if (stock >= 60) return { bg: '#fff3cd', text: '#856404', border: '#ffc107' };
+    return { bg: '#f8d7da', text: '#721c24', border: '#dc3545' };
+  }
+
+  // ── Build table ────────────────────────────────────────────────────────────
+  function buildTable() {
+    var c     = document.getElementById('dynamic-table-container');
+    var h     = '';
+    var nRows = 2 + SCENARIOS.length; // 2 header rows + 4 scenario rows = 6
+
+    h += '<table style="border-collapse:collapse;width:100%;min-width:620px;">';
+    h += '<tbody>';
+
+    // ── Row 0: top header ────────────────────────────────────────────────────
+    h += '<tr>';
+
+    // Col 1: group members — spans ALL rows
+    h += '<th rowspan="' + nRows + '" style="background:#f8fbfc;border:1px solid #ddd;width:22%;vertical-align:top;padding:15px;text-align:center;">';
+    h += '<div style="margin-bottom:10px;font-size:0.95rem;font-weight:bold;color:#2A788E;">Compañeros de grupo:</div>';
+    h += '<div style="display:flex;justify-content:center;gap:15px;">';
+    var anonCount = 0;
+    GROUPS.slice(0, 2).forEach(function (g) {
+      var isAnon = g.relation === 'anon';
+      h += '<div style="display:flex;flex-direction:column;align-items:center;text-align:center;">';
+      h += buildIcon(g.university, g.relation, 40, g.icon);
+      if (isAnon) {
+        anonCount++;
+        h += '<span style="font-size:0.75rem;font-weight:bold;margin-top:3px;">Anónimo/a ' + anonCount + '</span>';
+      } else {
+        h += '<span style="font-size:0.65rem;color:#555;margin-top:3px;">' + g.university + '</span>';
+        h += '<span style="font-size:0.75rem;font-weight:bold;">' + g.degree + '</span>';
+      }
+      h += '</div>';
+    });
+    h += '</div></th>';
+
+    // Col 2 header: "Uso promedio de ellos" — spans 2 header rows
+    h += '<th rowspan="2" style="background:#f5f9fa;border:1px solid #ddd;width:18%;font-size:0.9rem;color:#333;vertical-align:middle;padding:10px;text-align:center;">Uso promedio<br>de ellos (ha)</th>';
+
+    // "TAMAÑO DEL BOSQUE DISPONIBLE" spanning all stock columns
+    h += '<th colspan="' + STOCKS.length + '" style="background:#2A788E;color:white;letter-spacing:1px;font-size:1.1rem;border:1px solid #236577;text-align:center;padding:12px;">TAMAÑO DEL BOSQUE DISPONIBLE</th>';
+    h += '</tr>';
+
+    // ── Row 1: stock level boxes ─────────────────────────────────────────────
+    h += '<tr>';
+    STOCKS.forEach(function (stock, ci) {
+      var st  = stockStyle(stock);
+      var vis = ci === 0 ? '' : 'opacity:0;visibility:hidden;';
+      h += '<th id="hdr-' + ci + '" style="' + vis + 'transition:opacity 0.4s,visibility 0.4s;background:#fcfcfc;border:1px solid #ddd;width:20%;padding:18px 5px;text-align:center;">';
+      h += '<div style="margin:0 auto;width:48px;height:48px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.1rem;background:' + st.bg + ';color:' + st.text + ';border:2px solid ' + st.border + ';">' + stock + '</div>';
+      h += '<div style="font-size:0.8rem;color:#555;margin-top:6px;">ha</div>';
+      h += '</th>';
+    });
+    h += '</tr>';
+
+    // ── Rows 2-5: one per scenario ───────────────────────────────────────────
+    SCENARIOS.forEach(function (scen, si) {
+      h += '<tr>';
+
+      // Col 2: scenario label (uso promedio)
+      var lblOp = si === 0 ? '1' : '0.35';
+      h += '<td id="lbl-' + si + '" style="opacity:' + lblOp + ';transition:opacity 0.4s;border:1px solid #ddd;text-align:center;font-size:0.9rem;padding:8px;">' + scen.label + '</td>';
+
+      // Cols 3-5: input cells
+      STOCKS.forEach(function (stock, ci) {
+        var cellStyle = ci === 0
+          ? 'opacity:' + (si === 0 ? '1' : '0.35') + ';'
+          : 'opacity:0;visibility:hidden;';
+        var dis = (ci === 0 && si === 0) ? '' : 'disabled';
+        h += '<td id="cell-' + si + '-' + ci + '" style="' + cellStyle + 'transition:opacity 0.4s,visibility 0.4s;border:1px solid #ddd;text-align:center;padding:8px;vertical-align:middle;">';
+        h += '<input type="number" id="inp-' + si + '-' + ci + '" class="strat-inp"';
+        h += ' data-s="' + si + '" data-c="' + ci + '" data-stock="' + stock + '" data-mean="' + scen.meanOthers + '"';
+        h += ' min="0" max="10" placeholder="-" ' + dis;
+        h += ' style="width:55px;text-align:center;padding:6px;border:1px solid #ccc;border-radius:4px;font-size:1.1rem;box-sizing:border-box;">';
+        h += '<div id="tot-' + si + '-' + ci + '" style="visibility:hidden;font-size:0.8rem;margin-top:5px;color:#555;">Total grupo: <span style="font-weight:bold;">--</span></div>';
+        h += '</td>';
+      });
+      h += '</tr>';
+    });
+
+    h += '</tbody></table>';
+    c.innerHTML = h;
+  }
+
+  // ── Progress logic ─────────────────────────────────────────────────────────
+  function isValid(si, ci) {
+    var inp = document.getElementById('inp-' + si + '-' + ci);
+    if (!inp || inp.disabled) return false;
+    var v = parseInt(inp.value, 10);
+    return inp.value.trim() !== '' && !isNaN(v) && v >= 0 && v <= 10;
+  }
+
+  function refreshProgress() {
+    // Column 0: rows unlock sequentially
+    var prevOk = true;
+    for (var s = 0; s < SCENARIOS.length; s++) {
+      var lbl  = document.getElementById('lbl-'  + s);
+      var cell = document.getElementById('cell-' + s + '-0');
+      var inp  = document.getElementById('inp-'  + s + '-0');
+      if (prevOk) {
+        if (lbl)  lbl.style.opacity = '1';
+        if (cell) { cell.style.opacity = '1'; cell.style.visibility = 'visible'; }
+        if (inp)  inp.disabled = false;
+      } else {
+        if (lbl)  lbl.style.opacity = '0.35';
+        if (cell) cell.style.opacity = '0.35';
+        if (inp)  inp.disabled = true;
+      }
+      if (!isValid(s, 0)) prevOk = false;
+    }
+
+    // Columns 1+: unlock whole column when previous column fully complete
+    var prevColDone = true;
+    for (var s0 = 0; s0 < SCENARIOS.length; s0++) {
+      if (!isValid(s0, 0)) { prevColDone = false; break; }
+    }
+
+    for (var col = 1; col < STOCKS.length; col++) {
+      var hdr = document.getElementById('hdr-' + col);
+      if (prevColDone) {
+        if (hdr) { hdr.style.opacity = '1'; hdr.style.visibility = 'visible'; }
+        for (var s2 = 0; s2 < SCENARIOS.length; s2++) {
+          var c2 = document.getElementById('cell-' + s2 + '-' + col);
+          var i2 = document.getElementById('inp-'  + s2 + '-' + col);
+          if (c2) { c2.style.opacity = '1'; c2.style.visibility = 'visible'; }
+          if (i2) i2.disabled = false;
+        }
+      } else {
+        if (hdr) { hdr.style.opacity = '0'; hdr.style.visibility = 'hidden'; }
+        for (var s3 = 0; s3 < SCENARIOS.length; s3++) {
+          var c3 = document.getElementById('cell-' + s3 + '-' + col);
+          var i3 = document.getElementById('inp-'  + s3 + '-' + col);
+          if (c3) { c3.style.opacity = '0'; c3.style.visibility = 'hidden'; }
+          if (i3) i3.disabled = true;
+        }
+      }
+      // is this column complete?
+      var thisDone = prevColDone;
+      if (prevColDone) {
+        for (var s4 = 0; s4 < SCENARIOS.length; s4++) {
+          if (!isValid(s4, col)) { thisDone = false; break; }
+        }
+      }
+      prevColDone = thisDone;
+    }
+  }
+
+  // ── Tab order: columna por columna, de arriba hacia abajo ───────────────────
+  var TAB_ORDER = [];
+  for (var _ci = 0; _ci < STOCKS.length; _ci++) {
+    for (var _si = 0; _si < SCENARIOS.length; _si++) {
+      TAB_ORDER.push([_si, _ci]);
+    }
+  }
+
+  function focusAdjacentCell(si, ci, forward) {
+    var idx = -1;
+    for (var i = 0; i < TAB_ORDER.length; i++) {
+      if (TAB_ORDER[i][0] === si && TAB_ORDER[i][1] === ci) { idx = i; break; }
+    }
+    if (idx === -1) return false;
+    var step = forward ? 1 : -1;
+    for (var j = idx + step; j >= 0 && j < TAB_ORDER.length; j += step) {
+      var pair = TAB_ORDER[j];
+      var inp  = document.getElementById('inp-' + pair[0] + '-' + pair[1]);
+      if (inp && !inp.disabled) {
+        inp.focus();
+        inp.select();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // ── Events ─────────────────────────────────────────────────────────────────
+  buildTable();
+  refreshProgress();
+
+  var cont = document.getElementById('dynamic-table-container');
+
+  cont.addEventListener('keydown', function (e) {
+    if (!e.target.classList.contains('strat-inp')) return;
+    if (['.', ',', 'e', 'E', '-', '+'].indexOf(e.key) !== -1) e.preventDefault();
+    if (e.key === 'Tab') {
+      var si = parseInt(e.target.dataset.s, 10);
+      var ci = parseInt(e.target.dataset.c, 10);
+      if (focusAdjacentCell(si, ci, !e.shiftKey)) e.preventDefault();
+    }
+  });
+
+  cont.addEventListener('input', function (e) {
+    if (!e.target.classList.contains('strat-inp')) return;
+    var inp   = e.target;
+    var si    = parseInt(inp.dataset.s,    10);
+    var ci    = parseInt(inp.dataset.c,    10);
+    var stock = parseInt(inp.dataset.stock, 10);
+    var mean  = parseFloat(inp.dataset.mean);
+
+    // enforce integer 0–10
+    inp.value = inp.value.replace(/[^0-9]/g, '');
+    var v = parseInt(inp.value, 10);
+    if (!isNaN(v) && v > 10) inp.value = '';
+    v = parseInt(inp.value, 10);
+
+    var totDiv  = document.getElementById('tot-' + si + '-' + ci);
+    var totSpan = totDiv.querySelector('span');
+
+    if (inp.value.trim() !== '' && !isNaN(v) && v >= 0 && v <= 10) {
+      inp.style.border      = '2px solid #8bbbed';
+      inp.style.background  = '#f0f8ff';
+      var groupTotal = (mean * 2) + v;
+      totSpan.textContent   = groupTotal % 1 === 0 ? groupTotal : groupTotal.toFixed(1);
+      totSpan.style.color   = groupTotal <= maxSustainable(stock) ? '#28a745' : '#dc3545';
+      totDiv.style.visibility = 'visible';
+    } else {
+      inp.style.border      = '1px solid #ccc';
+      inp.style.background  = '#fff';
+      totDiv.style.visibility = 'hidden';
+    }
+    refreshProgress();
+  });
+
+  // ── Submit ─────────────────────────────────────────────────────────────────
+  window.addEventListener('load', function () {
+    var form = document.getElementById('form');
+    if (form) form.addEventListener('submit', handleSubmit);
+  });
+
+  function handleSubmit(e) {
+    var result = {};
+    var allOk  = true;
+    SCENARIOS.forEach(function (scen, si) {
+      STOCKS.forEach(function (stock, ci) {
+        var inp = document.getElementById('inp-' + si + '-' + ci);
+        if (!inp || inp.disabled) return;
+        var v = parseInt(inp.value, 10);
+        if (inp.value.trim() === '' || isNaN(v) || v < 0 || v > 10) {
+          allOk = false;
+        } else {
+          result['scen' + scen.id + '_st' + stock] = v;
+        }
+      });
+    });
+    if (!allOk) {
+      e.preventDefault();
+      document.getElementById('error-msg').style.display = 'block';
+      return false;
+    }
+    document.getElementById('error-msg').style.display = 'none';
+    document.getElementById('strategy_hidden_field').value = JSON.stringify(result);
+  }
+})();
+</script>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

@@ -1,0 +1,95 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+{{ endblock }}
+
+{{ block content }}
+<header>
+  <h1>Bienvenidos</h1>
+</header>
+
+<main>
+  <div class="welcome-box" style="max-width:1200px; margin:0 auto; text-align:justify; line-height:1.6;">
+
+    <p>
+      Gracias por participar en este estudio del <strong>Laboratorio Experimental Móvil (LEM)</strong>
+      del CICS, Universidad del Desarrollo.
+    </p>
+
+    <p>
+      En esta ocasión, los(as) invitamos a tomar decisiones económicas sobre la
+      <strong>administración de un campo forestal</strong>.
+    </p>
+
+    <p>
+      Todas las decisiones que tomen hoy serán completamente anónimas y confidenciales.
+      Además, en este laboratorio <strong>no utilizamos engaños</strong>: todas las reglas,
+      escenarios y ganancias que les describiremos durante la sesión son verídicos.
+    </p>
+
+    <h3 style="color:#2A788E; text-align:center; margin-top:30px; margin-bottom:15px;">
+      Actividades durante la sesión
+    </h3>
+    <p>
+      La actividad tiene una duración estimada de <strong>1 hora</strong> y constará
+      de las siguientes secciones:
+    </p>
+
+    <ol style="max-width:1200px; margin:0 auto 20px auto; padding:20px 20px 20px 50px;
+               background-color:#EAF3F5; border-radius:8px;">
+      <li style="margin-bottom:8px;">
+        <strong>Un cuestionario</strong> sobre sus opiniones sobre otros(as) universitarios.
+      </li>
+      <li style="margin-bottom:8px;">
+        <strong>Instrucciones sobre las actividades que realizarán hoy</strong>. Estas se organizan
+        en etapas compuestas por tres fases de decisiones sobre el uso de un recurso común.
+        Las decisiones que tomen en esta actividad tendrán impacto en cuánto ganarán dutrante la sesión.
+        Cada etapa consiste de:
+        <ul style="margin-top:8px; margin-bottom:8px; padding-left:20px; list-style-type:none;">
+          <li style="margin-bottom:6px;"><strong>I)</strong> Preguntas sobre sus expectativas acerca del comportamiento de otras personas.</li>
+          <li style="margin-bottom:6px;"><strong>II)</strong> Una serie de decisiones estratégicas, con y sin información sobre con quiénes estás interactuando.</li>
+          <li style="margin-bottom:6px;"><strong>III)</strong> Una sección interactiva donde deberán administrar un bosque a lo largo de 15 rondas. 
+                                                               En esta etapa, interactuarán en tiempo real con personas de otras universidades.</li>
+        </ul>
+      </li>
+      <li style="margin-bottom:8px;">
+        <strong>Repetir:</strong> la secuencia de fases I) expectativas, II) decisiones estratégicas
+        y III) decisiones interactivas se repetirá 3 veces durante la sesión.
+      </li>
+      <li style="margin-bottom:8px;">
+        <strong>Encuesta final</strong> y pago de los beneficios obtenidos durante la sesión.
+      </li>
+    </ol>
+
+    <h3 style="color:#2A788E; text-align:center; margin-top:30px; margin-bottom:15px;">
+      Consentimiento Informado
+    </h3>
+
+    <p>
+      Antes de comenzar, por favor asegúrense de leer detenidamente y
+      <strong>firmar el documento físico de consentimiento informado</strong>
+      que se encuentra junto a los computadores <strong>y hacer click</strong>
+      en la casilla que viene a continuación.
+    </p>
+
+    <div style="background-color:#fff; padding:14px 16px; border:1px solid #ccc; border-radius:5px;">
+      <label style="display:flex; align-items:flex-start; gap:12px; color:#333;
+                    cursor:pointer; margin:0; font-size:1rem; line-height:1.5;">
+        <input type="checkbox" name="consent_confirmed" required
+               style="flex-shrink:0; margin-top:3px; width:18px; height:18px;
+                      cursor:pointer; accent-color:#5E8C61;">
+        <span>Confirmo que he leído, comprendido y firmado el documento de
+          consentimiento informado, y acepto participar voluntariamente en este estudio.</span>
+      </label>
+    </div>
+
+    <p style="margin-top:20px;">
+      Si tienen dudas en cualquier momento de la sesión, por favor
+      <strong>levanten la mano en silencio</strong> y parte del equipo de
+      investigación se acercará a sus puestos para ayudarles.
+    </p>
+
+  </div>
+</main>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

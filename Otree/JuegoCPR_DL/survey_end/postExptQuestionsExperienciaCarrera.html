@@ -1,0 +1,208 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+{{ endblock }}
+
+{{ block content }}
+
+<!-- Sprite de íconos de carrera (avatar combinado: logo universidad + ícono) -->
+<svg style="display:none">
+  <symbol id="av-1" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/></symbol>
+  <symbol id="av-2" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="currentColor"/></symbol>
+  <symbol id="av-3" viewBox="0 0 64 64"><polygon points="32,4 60,32 32,60 4,32" fill="currentColor"/></symbol>
+  <symbol id="av-4" viewBox="0 0 64 64"><polygon points="32,4 62,60 2,60" fill="currentColor"/></symbol>
+  <symbol id="av-5" viewBox="0 0 64 64"><polygon points="32,4 59,22 49,54 15,54 5,22" fill="currentColor"/></symbol>
+  <symbol id="av-6" viewBox="0 0 64 64"><polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="currentColor"/></symbol>
+  <symbol id="av-7" viewBox="0 0 64 64"><polygon points="32,4 38,24 60,24 43,37 49,58 32,45 15,58 21,37 4,24 26,24" fill="currentColor"/></symbol>
+  <symbol id="av-8" viewBox="0 0 64 64"><rect x="24" y="2" width="16" height="60" fill="currentColor"/><rect x="2" y="24" width="60" height="16" fill="currentColor"/></symbol>
+  <symbol id="av-9" viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="30" ry="18" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <h1>Experiencia Universitaria</h1>
+</header>
+
+<main>
+  <div class="welcome-box" style="max-width:1000px; margin:0 auto; text-align:justify; line-height:1.6;">
+
+    <strong>En una escala del 0 al 10, ¿cuánta experiencia previa has tenido con estudiantes de las siguientes universidades y carreras (antes de esta sesión)?</strong>
+
+    <input type="hidden" name="experience_careers_json" id="experience_careers_json" value="">
+
+    <div id="dynamic-experience-container"
+         style="background-color:#fff; border:1px solid #ddd; border-radius:8px;
+                padding:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05); margin-top:20px;">
+      <p style="text-align:center; color:#888; padding:20px;">Cargando perfiles...</p>
+    </div>
+
+    <div id="experience-error-msg"
+         style="color:#dc3545; text-align:center; display:none; margin-top:15px; font-weight:bold;">
+      Por favor, responda todas las preguntas antes de continuar.
+    </div>
+
+  </div>
+</main>
+
+<script>
+const GROUPS_DATA = {{ groups_json }};
+const ANON_ICON = "{{ anon_icon }}";
+
+const UNI_LOGO_CLASS = {
+  UDD:'logo-udd', UTalca:'logo-utalca', UAndes:'logo-uandes', USACH:'logo-usach'
+};
+
+const RELATION_COLOR = {
+  you:'#440154', nearClose:'#31688E', nearFar:'#35B779', far:'#D4AC0D'
+};
+
+const SCALE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+/* Avatar del grupo: logo de su universidad (color según relación) + ícono de
+   su carrera, o silueta genérica + ícono "anónimo" si no se conoce identidad */
+function buildIcon(university, relation, color, sizePx, icon) {
+  var size = 'width:' + sizePx + 'px;height:' + sizePx + 'px;';
+  var base;
+  if (!university || relation === 'anon') {
+    base = '<svg class="anon-icon" viewBox="0 0 64 64" style="color:#888;">' +
+      '<circle cx="32" cy="20" r="11" fill="currentColor"/>' +
+      '<path d="M10,60 Q10,38 32,38 Q54,38 54,60 Z" fill="currentColor"/></svg>';
+  } else {
+    var cls = UNI_LOGO_CLASS[university] || '';
+    base = '<span class="uni-logo ' + cls + '" style="color:' + color + ';"></span>';
+  }
+  var badge = icon
+    ? '<svg class="career-badge" viewBox="0 0 64 64" style="color:' + color + ';"><use href="#av-' + icon + '"></use></svg>'
+    : '';
+  return '<span class="combo-avatar" style="' + size + '">' + base + badge + '</span>';
+}
+
+function buildExperienceMatrix() {
+  const container = document.getElementById('dynamic-experience-container');
+  container.innerHTML = '';
+
+  if (!GROUPS_DATA.length) {
+    container.innerHTML =
+      '<p style="text-align:center;color:#888;padding:20px;">No hay perfiles disponibles.</p>';
+    return;
+  }
+
+  const table = document.createElement('table');
+  table.className = 'matrix-table';
+  table.style.width = '100%';
+  table.style.tableLayout = 'fixed';
+
+  /* Cabecera */
+  const colCount  = SCALE.length;
+  const half      = Math.floor(colCount / 2);
+  const colWidth  = 'width:calc(60% / ' + colCount + ');';
+  table.innerHTML =
+    '<thead>' +
+      '<tr>' +
+        '<th style="width:40%;"></th>' +
+        '<th colspan="' + half + '" style="text-align:left;font-weight:normal;color:#555;">Ninguna experiencia</th>' +
+        (colCount % 2 === 1 ? '<th></th>' : '') +
+        '<th colspan="' + half + '" style="text-align:right;font-weight:normal;color:#555;">Mucha experiencia</th>' +
+      '</tr>' +
+      '<tr>' +
+        '<th></th>' +
+        SCALE.map(function (v) {
+          return '<th style="text-align:center;' + colWidth + '">' + v + '</th>';
+        }).join('') +
+      '</tr>' +
+    '</thead>';
+
+  const tbody = document.createElement('tbody');
+
+  GROUPS_DATA.forEach(function (group) {
+    const color = RELATION_COLOR[group.relation] || '#555';
+    const rName = 'experience_' + group.key.replace(/[^a-zA-Z0-9]/g, '_');
+
+    const tr = document.createElement('tr');
+    tr.className = 'matrix-row';
+    tr.dataset.profileKey = group.key;
+
+    /* Celda de perfil */
+    const profileHTML =
+      '<td class="item-text">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          buildIcon(group.university, group.relation, color, 36, group.icon) +
+          '<div>' +
+            '<strong style="color:' + color + ';">' + group.university + ' - ' + group.degree + '</strong><br>' +
+          '</div>' +
+        '</div>' +
+      '</td>';
+
+    /* Celdas de radio */
+    const radioCells = SCALE.map(function (v) {
+      return '<td style="text-align:center;padding:12px 4px;">' +
+               '<input type="radio" name="' + rName + '" value="' + v + '" ' +
+               'style="transform:scale(1.3);cursor:pointer;">' +
+             '</td>';
+    }).join('');
+
+    tr.innerHTML = profileHTML + radioCells;
+    tbody.appendChild(tr);
+  });
+
+  /* Fila extra: Estudiante Anónimo */
+  {
+    const anonKey   = '__anon__';
+    const anonRName = 'experience___anon__';
+
+    const anonTr = document.createElement('tr');
+    anonTr.className = 'matrix-row';
+    anonTr.dataset.profileKey = anonKey;
+
+    const anonProfile =
+      '<td class="item-text">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          buildIcon('', 'anon', '#888', 36, ANON_ICON) +
+          '<div>' +
+            '<strong style="color:#888;">Estudiante Anónimo</strong><br>'  +
+          '</div>' +
+        '</div>' +
+      '</td>';
+
+    const anonCells = SCALE.map(function (v) {
+      return '<td style="text-align:center;padding:12px 4px;">' +
+               '<input type="radio" name="' + anonRName + '" value="' + v + '" ' +
+               'style="transform:scale(1.3);cursor:pointer;">' +
+             '</td>';
+    }).join('');
+
+    anonTr.innerHTML = anonProfile + anonCells;
+    tbody.appendChild(anonTr);
+  }
+
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+buildExperienceMatrix();
+
+/* Serialización al enviar */
+document.querySelector('form').addEventListener('submit', function (e) {
+  const ratings = {};
+  let valid = true;
+
+  document.querySelectorAll('[data-profile-key]').forEach(function (row) {
+    const key     = row.dataset.profileKey;
+    const checked = row.querySelector('input[type="radio"]:checked');
+    if (!checked) {
+      valid = false;
+    } else {
+      ratings[key] = parseInt(checked.value, 10);
+    }
+  });
+
+  if (!valid) {
+    e.preventDefault();
+    document.getElementById('experience-error-msg').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('experience_careers_json').value = JSON.stringify(ratings);
+});
+</script>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

@@ -1,0 +1,171 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+<style>
+  .welcome-box .info-box { max-width: 100%; }
+</style>
+{{ endblock }}
+
+{{ block content }}
+<header>
+  <h1>Incentivos Económicos y Pagos</h1>
+</header>
+
+<main>
+  <div class="welcome-box"
+       style="max-width:1200px; width:100%; box-sizing:border-box; margin:0 auto;
+              text-align:justify; line-height:1.6; padding:40px 30px; font-size:1.1rem;">
+
+    <p style="text-align:center; margin-bottom:30px;">
+      A continuación, les explicamos cómo las decisiones que toman en cada fase se
+      transforman en ganancias al final de la sesión.
+      <strong>Recuerden que cada hectárea obtenida equivale a $60 pesos chilenos.</strong>
+    </p>
+
+    <!-- REGLA DE SELECCIÓN ALEATORIA -->
+    <div class="info-box"
+         style="background-color:#f5f9fa; border:2px solid #2A788E; border-radius:8px;
+                padding:20px; margin:0 auto 40px auto; width:100%; box-sizing:border-box;
+                text-align:center; font-size:1.1rem;">
+      <h3 style="color:#2A788E; margin-top:0; margin-bottom:10px; font-size:1.2rem;">
+        Consecuencias de las decisiones
+      </h3>
+      <p style="margin-top: 10px">
+        Las decisiones que tomen en las distintas fases de cada etapa determinarán la cantidad
+        de hectáreas que acumulen. Cada <strong>etapa</strong> se compone de tres fases:
+      </p>
+      <p style="text-align: center;" > 
+        <em>Expectativas (I) ➔ Estrategias (II) ➔ Juego Interactivo (III)</em>, 
+      </p>
+      <p>y durante la sesión jugarán un total de <strong>3 etapas completas</strong>.</p>
+      <p style="margin:0;margin-top: 10px;">
+        Al finalizar la sesión, el sistema <strong>seleccionará al azar solamente UNA de estas
+        3 etapas</strong>. Su pago final corresponderá a la suma de las hectáreas que hayan
+        conseguido a lo largo de las tres fases de la etapa seleccionada.
+      </p>
+    </div>
+
+    <h3 style="text-align:center; color:#31333FFF; margin-bottom:10px; font-size:1.2rem;">
+      ¿Cómo se calculan las hectáreas en la etapa seleccionada?
+    </h3>
+
+    <p style="text-align:center; margin-bottom:30px; color:#555;">
+      El <strong>comportamiento real de su equipo en el juego interactivo</strong> es la clave,
+      ya que lo que suceda en esa fase III determinará el resultado de las decisiones de
+      planificación que tomaron en las fases I y II.
+    </p>
+
+    
+    <!-- CAJA 1: EXPECTATIVAS -->
+    <div class="info-box"
+         style="border-left:5px solid #2A788E; background-color:#fff; padding:20px;
+                margin-bottom:20px; width:100%; box-sizing:border-box;
+                box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+      <h3 style="color:#2A788E; margin-top:0; margin-bottom:10px; font-size:1.2rem;">
+        I. Sus Expectativas
+      </h3>
+      <p style="margin:0;">
+        Podrá ganar 5 hectáreas extra cada vez que estime correctamente cuántas 
+        hectáreas cosecharán los estudiantes de su grupo en el juego interactivo.
+      </p><br>
+      <p style="margin:0;">
+        Para evaluar si la estimación es correcta, se comparará su respuesta con el promedio 
+        real de los estudiantes que tengan la misma carrera y universidad de la estimación, 
+        redondeado al número entero más cercano, en la ronda que se le está preguntando.
+      </p><br>
+      <p style="margin:0;">
+        Las hectáreas extra obtenidas por este ejercicio se irán acumulando cada vez que 
+        se le pregunte por sus expectativas dentro de la etapa.
+      </p><br>
+      <p style="margin:0;">
+        Si su estimación no coincide con el valor jugado por los otros integrantes de su grupo, 
+        recibirá 0 hectáreas extra por esa pregunta.
+      </p>     
+    </div>
+
+    <!-- CAJA 2: ESTRATEGIA -->
+    <div class="info-box"
+         style="border-left:5px solid #22A884; background-color:#fff; padding:20px;
+                margin-bottom:20px; width:100%; box-sizing:border-box;
+                box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+      <h3 style="color:#22A884; margin-top:0; margin-bottom:10px; font-size:1.2rem;">
+        II. Decisiones Estratégicas (Matriz)
+      </h3>
+      <p style="margin-bottom:15px;">
+        Para calcular el pago de su estrategia, el sistema se basará en el equipo definitivo
+        que se forme aleatoriamente para el juego interactivo. Para ese equipo, el sistema
+        revisará el nivel del bosque y el comportamiento de las personas en 
+        <strong>una ronda aleatoria</strong> del juego interactivo. En específico:
+      </p>
+      <ul style="margin-top:10px; margin-bottom:10px; padding-left:25px;">
+        <li>El <strong>nivel real de hectáreas de bosque</strong> disponible al inicio de esa ronda.</li>
+        <li>El <strong>promedio de hectáreas que cosecharon los otros dos integrantes</strong>
+            en esa misma ronda.</li>
+      </ul>
+      <p style="margin:0;">
+        La decisión (entre 0 y 10) que ustedes dejaron ingresada en la matriz para esa
+        combinación exacta de escenario (o la más cercana), se convertirá en su <strong>"cosecha oficial"</strong>.        
+      </p>
+    </div>
+
+    <!-- CAJA 3: INTERACTIVO -->
+    <div class="info-box"
+         style="border-left:5px solid #D35400FF; background-color:#fff; padding:20px;
+                margin-bottom:20px; width:100%; box-sizing:border-box;
+                box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+      <h3 style="color:#D35400FF; margin-top:0; margin-bottom:10px; font-size:1.2rem;">
+        III. Juego Interactivo (En vivo)
+      </h3>
+      <p style="margin:0;">
+        En esta sección ganarán <strong>la suma total acumulada</strong> de todas las hectáreas
+        que hayan cosechado a lo largo de las 15 rondas cuando interactúen con su grupo definitivo. 
+      </p>
+    </div>
+    <!-- TIMELINE SVG -->
+    <div style="width:100%; overflow-x:auto; margin-bottom:30px;">
+      <svg viewBox="0 0 800 320"
+           style="width:100%; min-width:600px; max-width:100%; display:block; margin:0 auto;">
+        <defs>
+          <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3"
+                  orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#2A788E"/>
+          </marker>
+          <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3"
+                  orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#22A884"/>
+          </marker>
+        </defs>
+        <line x1="150" y1="250" x2="650" y2="250" stroke="#ccc" stroke-width="4"/>
+        <path d="M 650 230 C 567 80, 483 80, 400 230" fill="none" stroke="#22A884"
+              stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#arrowGreen)"/>
+        <text x="525" y="85" fill="#22A884" text-anchor="middle" font-weight="bold">
+          Activa su jugada oficial
+        </text>
+        <text x="525" y="105" fill="#22A884" font-size="12" text-anchor="middle">
+          (Ronda aleatoria)
+        </text>
+        <path d="M 650 220 C 483 -60, 316 -60, 150 220" fill="none" stroke="#2A788E"
+              stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#arrowBlue)"/>
+        <text x="400" y="35" fill="#2A788E" text-anchor="middle" font-weight="bold">
+          Determina si acertaron
+        </text>
+        <text x="400" y="55" fill="#2A788E" font-size="12" text-anchor="middle">(Ronda pregunta)</text>
+        <circle cx="150" cy="250" r="12" fill="#2A788E"/>
+        <text x="150" y="285" fill="#333" font-size="16" text-anchor="middle" font-weight="bold">
+          I. Expectativas
+        </text>
+        <circle cx="400" cy="250" r="12" fill="#22A884"/>
+        <text x="400" y="285" fill="#333" font-size="16" text-anchor="middle" font-weight="bold">
+          II. Estrategia
+        </text>
+        <circle cx="650" cy="250" r="15" fill="#D35400FF"/>
+        <text x="650" y="285" fill="#D35400FF" font-size="16" text-anchor="middle" font-weight="bold">
+          III. Juego Interactivo
+        </text>
+      </svg>
+    </div>
+
+  </div>
+</main>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

@@ -1,0 +1,119 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+{{ endblock }}
+
+{{ block content }}
+<header>
+  <h1>Cuestionario Inicial</h1>
+</header>
+
+<main>
+  <div class="welcome-box">
+    <p class="instruction">
+      Por favor, seleccione su universidad, facultad y carrera.
+    </p>
+
+    <div class="player-section">
+      <label for="id_university">Universidad:</label>
+      <select id="id_university" name="university" required>
+        <option value="" disabled selected>Seleccione...</option>
+        <option value="UDD">Universidad del Desarrollo (UDD)</option>
+        <option value="UTalca">Universidad de Talca (UTalca)</option>
+        <option value="UAndes">Universidad de los Andes (UAndes)</option>
+        <option value="USACH">Universidad de Santiago de Chile (USACH)</option>
+      </select>
+
+      <label for="id_faculty">Facultad:</label>
+      <select id="id_faculty" name="faculty" required>
+        <option value="" disabled selected>Seleccione...</option>
+      </select>
+
+      <label for="id_degree">Carrera:</label>
+      <select id="id_degree" name="degree" required>
+        <option value="" disabled selected>Seleccione...</option>
+      </select>      
+    </div>
+
+    <div id="errorDisplay" style="color:red; text-align:center; margin-top:10px;"></div>
+  </div>
+</main>
+
+<script>
+/* Datos universidad → facultades → carreras.
+   Actualizar si cambian las ofertas académicas de cada casa de estudios. */
+const UNIV_DATA = {
+  UDD: {
+    'Facultad de Economía y Negocios':   ['Ingeniería Comercial', 'Contador Auditor'],
+    'Facultad de Ingeniería':            ['Ing. Civil Industrial', 'Ing. en Computación e Informática'],
+    'Facultad de Derecho':               ['Derecho'],
+    'Facultad de Medicina':              ['Medicina', 'Enfermería', 'Kinesiología', 'Nutrición y Dietética'],
+    'Facultad de Psicología':            ['Psicología'],
+    'Facultad de Arquitectura y Arte':   ['Arquitectura', 'Diseño'],
+  },
+  UTalca: {
+    'Facultad de Ciencias Empresariales':          ['Ingeniería Comercial', 'Contador Auditor', 'Ing. en Gestión de Empresas'],
+    'Facultad de Ingeniería':                      ['Ing. Civil Informática', 'Ing. Civil Industrial', 'Ing. Civil Mecánica'],
+    'Facultad de Ciencias de la Salud':            ['Medicina', 'Enfermería', 'Kinesiología'],
+    'Facultad de Ciencias Jurídicas y Sociales':   ['Derecho', 'Trabajo Social'],
+    'Facultad de Psicología':                      ['Psicología'],
+    'Facultad de Ciencias Agrarias':               ['Agronomía', 'Ing. en Agronegocios'],
+  },
+  UAndes: {
+    'Facultad de Ciencias Económicas y Empresariales': ['Ingeniería Comercial', 'Contador Auditor'],
+    'Facultad de Ingeniería y Ciencias Aplicadas':     ['Ing. Civil Industrial', 'Ing. en Sistemas de Información'],
+    'Facultad de Derecho':                             ['Derecho'],
+    'Facultad de Medicina':                            ['Medicina', 'Enfermería', 'Kinesiología'],
+    'Escuela de Psicología':                           ['Psicología'],
+  },
+  USACH: {
+    'Facultad de Administración y Economía': ['Ingeniería Comercial', 'Contador Auditor'],
+    'Facultad de Ingeniería':                ['Ing. Civil Industrial', 'Ing. en Informática', 'Ing. Civil Mecánica', 'Ing. Civil Eléctrica'],
+    'Departamento de Derecho':               ['Derecho'],
+    'Facultad de Psicología':                ['Psicología'],
+    'Facultad de Ciencias Médicas':          ['Enfermería', 'Kinesiología', 'Nutrición y Dietética'],
+  },
+};
+
+const uniSel = document.getElementById('id_university');
+const facSel = document.getElementById('id_faculty');
+const degSel = document.getElementById('id_degree');
+
+function fillSelect(sel, options) {
+  sel.innerHTML = '<option value="" disabled selected>Seleccione...</option>';
+  options.forEach(function(o) {
+    const opt = document.createElement('option');
+    opt.value = o;
+    opt.textContent = o;
+    sel.appendChild(opt);
+  });
+  sel.disabled = false;
+}
+
+uniSel.addEventListener('change', function () {
+  const faculties = Object.keys(UNIV_DATA[this.value] || {});
+  fillSelect(facSel, faculties);
+  degSel.innerHTML = '<option value="" disabled selected>Seleccione...</option>';
+  degSel.disabled = true;
+});
+
+facSel.addEventListener('change', function () {
+  const degrees = (UNIV_DATA[uniSel.value] || {})[this.value] || [];
+  fillSelect(degSel, degrees);
+});
+
+facSel.disabled = true;
+degSel.disabled = true;
+
+/* Validación antes de enviar: evita submits con selects vacíos */
+document.querySelector('form').addEventListener('submit', function (e) {
+  const err = document.getElementById('errorDisplay');
+  if (!uniSel.value || !facSel.value || !degSel.value || !document.getElementById('id_study_level').value) {
+    e.preventDefault();
+    err.textContent = 'Por favor complete todos los campos antes de continuar.';
+    err.style.display = 'block';
+  }
+});
+</script>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

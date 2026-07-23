@@ -1,0 +1,190 @@
+{{ block styles }}<link rel="stylesheet" href="/static/global/styles.css">{{ endblock }}
+{{ block content }}
+
+<!-- Sprite de íconos de carrera (avatar combinado: logo universidad + ícono) -->
+<svg style="display:none">
+  <symbol id="av-1" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/></symbol>
+  <symbol id="av-2" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="currentColor"/></symbol>
+  <symbol id="av-3" viewBox="0 0 64 64"><polygon points="32,4 60,32 32,60 4,32" fill="currentColor"/></symbol>
+  <symbol id="av-4" viewBox="0 0 64 64"><polygon points="32,4 62,60 2,60" fill="currentColor"/></symbol>
+  <symbol id="av-5" viewBox="0 0 64 64"><polygon points="32,4 59,22 49,54 15,54 5,22" fill="currentColor"/></symbol>
+  <symbol id="av-6" viewBox="0 0 64 64"><polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="currentColor"/></symbol>
+  <symbol id="av-7" viewBox="0 0 64 64"><polygon points="32,4 38,24 60,24 43,37 49,58 32,45 15,58 21,37 4,24 26,24" fill="currentColor"/></symbol>
+  <symbol id="av-8" viewBox="0 0 64 64"><rect x="24" y="2" width="16" height="60" fill="currentColor"/><rect x="2" y="24" width="60" height="16" fill="currentColor"/></symbol>
+  <symbol id="av-9" viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="30" ry="18" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <h1>Ronda {{ round_number }} de {{ total_rounds }}</h1>
+</header>
+
+<div style="max-width:1200px;margin:0 auto;padding:20px;">
+  <div style="display:flex;gap:25px;align-items:stretch;flex-wrap:wrap;">
+
+    <!-- left column: pool status -->
+    <div class="welcome-box" style="flex:1;min-width:320px;padding:20px 25px;">
+      <div id="pool-forest-grid" class="forest-grid" style="margin-bottom:15px;width:220px;height:220px;padding:10px;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <strong>Bosque disponible:</strong>
+        <span id="pool-before-value" style="font-size:1.4rem;font-weight:bold;font-family:monospace;">{{ pool_before }} ha</span>
+      </div>
+      {% if is_constrained %}
+      <div style="margin-top:10px;padding:10px;background:#fef3cd;border-left:4px solid #E67E22;border-radius:4px;color:#856404;">
+        <strong>Bosque bloqueado:</strong> quedan menos de 30 ha. Nadie puede cosechar
+        hasta que la regeneración lo lleve de vuelta a 30 ha o más.
+      </div>
+      {% else %}
+      <div style="margin-top:10px;font-size:1.1rem;color:#555;">
+        Si cada integrante del grupo cosecha hasta <strong>{{ sustainability_individual_threshold }} ha</strong>, el bosque se regenerará para mantener el nivel actual.
+        <br> Máximo individual permitido: <strong>{{ max_extraction }} ha</strong>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- right column: player logos + decision form, same box -->
+    <div class="welcome-box" style="flex:1.6;min-width:320px;padding:20px 25px;">
+      <p style="text-align: center;"><strong>Grupo</strong> <br></p>
+      <!-- player cards: tú arriba, los/as 2 compañeros/as abajo -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:15px;margin-bottom:20px;">
+
+        <!-- self -->
+        <div class="player you" style="display:flex;flex-direction:column;align-items:center;min-width:80px;">
+          <span class="combo-avatar" style="width:48px;height:48px;">
+
+            <span class="uni-logo {{ my_logo_class }}"></span>
+            {% if my_icon_id %}
+            <svg class="career-badge" viewBox="0 0 64 64"><use href="#av-{{ my_icon_id }}"></use></svg>
+            {% endif %}
+          </span>
+          <span style="font-size:0.65rem;margin-top:4px;color:#555;">{{ my_university }}</span>
+          <span style="font-size:0.85rem;font-weight:bold;">Tú ({{ my_degree }})</span>
+        </div>
+
+        <!-- opponents (rendered by JS) -->
+        <div id="opponents-container" style="display:flex;justify-content:center;gap:25px;flex-wrap:wrap;"></div>
+
+      </div>
+
+      <!-- decision form -->
+      <p style="text-align:center;font-size:1.1rem;margin-bottom:20px;">
+        {% if is_constrained %}
+        <strong>El bosque tiene menos de 30 ha: esta ronda solo puedes cosechar 0 ha.</strong>
+        {% else %}
+        <strong>¿Cuántas hectáreas quieres cosechar esta ronda?</strong>
+        <br><small style="color:#666;">(Entre 0 y {{ max_extraction }})</small>
+        {% endif %}
+      </p>
+      <div style="display:flex;justify-content:center;align-items:center;gap:15px;">
+        <input type="number" name="extraction" id="id_extraction"
+               min="0" max="{{ max_extraction }}" required
+               style="width:90px;font-size:1.8rem;text-align:center;padding:10px;border:2px solid #2A788E;border-radius:8px;">
+        <span style="font-size:1.4rem;color:#555;">ha</span>
+      </div>
+      <div id="input-error" style="display:none;color:#dc3545;text-align:center;margin-top:10px;font-weight:bold;"></div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  var opponents = {{ opponents }};
+
+  var UNI_LOGO_CLASS = {
+    UDD:'logo-udd', UTalca:'logo-utalca', UAndes:'logo-uandes', USACH:'logo-usach'
+  };
+
+  function buildIcon(university, relation, sizePx, icon) {
+    var isAnon = !university || relation === 'anon';
+    var size = 'width:' + sizePx + 'px;height:' + sizePx + 'px;' + (isAnon ? 'color:#888;' : '');
+    var base = isAnon
+      ? '<svg class="anon-icon" viewBox="0 0 64 64">' +
+          '<circle cx="32" cy="20" r="11" fill="currentColor"/>' +
+          '<path d="M10,60 Q10,38 32,38 Q54,38 54,60 Z" fill="currentColor"/></svg>'
+      : '<span class="uni-logo ' + (UNI_LOGO_CLASS[university] || '') + '"></span>';
+    var badge = icon
+      ? '<svg class="career-badge" viewBox="0 0 64 64"><use href="#av-' + icon + '"></use></svg>'
+      : '';
+    return '<span class="combo-avatar" style="' + size + '">' + base + badge + '</span>';
+  }
+
+  function renderOpponents() {
+    var container = document.getElementById('opponents-container');
+    var html = '';
+    var anonCount = 0;
+    opponents.forEach(function(opp) {
+      var isAnon = opp.relation === 'anon';
+      if (isAnon) anonCount++;
+      var uniLabel = isAnon ? '' : opp.university;
+      var degLabel = isAnon ? ('Anónimo/a ' + anonCount) : opp.degree;
+      html += '<div class="player ' + opp.relation + '" style="display:flex;flex-direction:column;align-items:center;min-width:80px;">';
+      html += buildIcon(opp.university, opp.relation, 48, opp.icon);
+      html += '<span style="font-size:0.65rem;margin-top:4px;color:#555;">' + uniLabel + '</span>';
+      html += '<span style="font-size:0.85rem;font-weight:bold;">' + degLabel + '</span>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  }
+
+  renderOpponents();
+
+  function renderPoolGrid(poolBefore) {
+    var container = document.getElementById('pool-forest-grid');
+    if (!container) return;
+    var pine = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;"><path fill="currentColor" d="M12 2L2 14h3v8h14v-8h3L12 2z"/></svg>';
+    var missing = 100 - poolBefore; // celdas ya cosechadas, desaparecen desde la 1a fila hacia abajo
+    var html = '';
+    for (var i = 0; i < 100; i++) {
+      if (i < missing) {
+        html += '<div class="grid-cell tree-cut"></div>';
+      } else {
+        html += '<div class="grid-cell tree-old">' + pine + '</div>';
+      }
+    }
+    container.innerHTML = html;
+
+    // mismos colores/umbrales que las tarjetas de Feedback (>75 verde, >=51 amarillo, resto rojo)
+    var bg, border;
+    if (poolBefore > 75) {
+      bg = '#EFF5EF'; border = '#5E8C61';
+    } else if (poolBefore >= 51) {
+      bg = '#FAF1E3'; border = '#C9963A';
+    } else {
+      bg = '#F7EBE9'; border = '#B5564B';
+    }
+    container.style.background = bg;
+    var valueSpan = document.getElementById('pool-before-value');
+    if (valueSpan) valueSpan.style.color = border;
+    container.style.borderColor = border;
+  }
+
+  var poolBefore = {{ pool_before }};
+  renderPoolGrid(poolBefore);
+
+  window.addEventListener('load', function() {
+    var form = document.getElementById('form');
+    var input = document.getElementById('id_extraction');
+    var maxExt = {{ max_extraction }};
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        var val = parseInt(input.value);
+        var errDiv = document.getElementById('input-error');
+        if (isNaN(val) || val < 0 || val > maxExt) {
+          e.preventDefault();
+          errDiv.style.display = 'block';
+          errDiv.textContent = 'Por favor ingresa un número entre 0 y ' + maxExt + '.';
+          return false;
+        }
+        errDiv.style.display = 'none';
+      });
+    }
+    input.addEventListener('input', function() {
+      document.getElementById('input-error').style.display = 'none';
+    });
+  });
+})();
+</script>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

@@ -1,0 +1,151 @@
+{{ block styles }}<link rel="stylesheet" href="/static/global/styles.css">{{ endblock }}
+{{ block content }}
+
+<!-- Sprite de íconos de carrera (avatar combinado: logo universidad + ícono) -->
+<svg style="display:none">
+  <symbol id="av-1" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/></symbol>
+  <symbol id="av-2" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="currentColor"/></symbol>
+  <symbol id="av-3" viewBox="0 0 64 64"><polygon points="32,4 60,32 32,60 4,32" fill="currentColor"/></symbol>
+  <symbol id="av-4" viewBox="0 0 64 64"><polygon points="32,4 62,60 2,60" fill="currentColor"/></symbol>
+  <symbol id="av-5" viewBox="0 0 64 64"><polygon points="32,4 59,22 49,54 15,54 5,22" fill="currentColor"/></symbol>
+  <symbol id="av-6" viewBox="0 0 64 64"><polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="currentColor"/></symbol>
+  <symbol id="av-7" viewBox="0 0 64 64"><polygon points="32,4 38,24 60,24 43,37 49,58 32,45 15,58 21,37 4,24 26,24" fill="currentColor"/></symbol>
+  <symbol id="av-8" viewBox="0 0 64 64"><rect x="24" y="2" width="16" height="60" fill="currentColor"/><rect x="2" y="24" width="60" height="16" fill="currentColor"/></symbol>
+  <symbol id="av-9" viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="30" ry="18" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <h1>Ronda {{ round_number }} — Resultados</h1>
+</header>
+
+<main>
+  <div class="feedback-box">
+
+    <!-- pool before -->
+    <div class="summary-line">
+      <strong>Las hectáreas disponibles en el bosque antes de la ronda:</strong>
+      <span style="font-size:1.2rem;font-weight:bold;font-family:monospace;">{{ pool_before }} ha</span>
+    </div>
+
+    <!-- self extraction -->
+    <div class="summary-line" style="align-items:center;margin-top:15px;">
+      <strong>Tú cosechaste:</strong>
+      <span style="font-size:1.2rem;margin-left:5px;font-family:monospace;font-weight:bold;">{{ my_extraction }} ha</span>
+      <span style="margin-right:20px;"></span>
+      <div class="player you" style="display:inline-flex;flex-direction:column;align-items:center;">
+        <span class="combo-avatar" style="width:60px;height:60px;">
+          <span class="uni-logo {{ my_logo_class }}"></span>
+          {% if my_icon_id %}
+          <svg class="career-badge" viewBox="0 0 64 64"><use href="#av-{{ my_icon_id }}"></use></svg>
+          {% endif %}
+        </span>
+        <span style="font-size:0.65rem;margin-top:4px;">{{ my_university }}</span>
+        <span class="label" style="font-size:0.8rem;font-weight:bold;">Tú</span>
+      </div>
+    </div>
+
+    {% if paid_by_strategy %}
+    <div class="summary-line" style="margin-top:10px;padding:10px 15px;background:#EAF3F5;border-left:4px solid #2A788E;border-radius:4px;">
+      <span style="color:#2A788E;font-size:0.95rem;">
+        <strong>Ronda seleccionada para el pago:</strong> el resultado y la ganancia de esta ronda
+        provienen de la respuesta que diste en la fase de Estrategia, no de la decisión que ingresaste aquí.
+      </span>
+    </div>
+    {% endif %}
+
+    <!-- others extraction -->
+    <div class="summary-line" style="align-items:center;margin-top:25px;margin-bottom:10px;">
+      <strong style="margin-right:15px;">Promedio cosechado por los/as otros/as:</strong>
+      <span style="font-size:1.8rem;font-weight:bold;color:#555;margin-right:25px;line-height:1;font-family:monospace;">{{ mean_others }}</span>
+      <div id="opponents-feedback" style="display:flex;gap:15px;"></div>
+    </div>
+
+    <!-- TOTAL COSECHADO -->
+    <div class="summary-line" id="box-groupSum"
+         style="margin-top:20px;padding:15px;background:{{ groupsum_bg }};border-radius:8px;justify-content:space-between;border-left:6px solid {{ groupsum_color }};box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+      <strong style="font-size:1.1rem;">Total cosechado por el equipo:</strong>
+      <span style="font-size:1.8rem;font-weight:bold;font-family:monospace;color:{{ groupsum_color }};">{{ total_extracted }} ha</span>
+    </div>
+
+    <hr style="border-top:1px solid #eee;margin:15px 0;">
+
+    <!-- GANANCIA -->
+    <div class="summary-line" id="box-ganancia"
+         style="margin-top:15px;padding:15px;background:{{ ganancia_bg }};border-radius:8px;justify-content:space-between;border-left:6px solid {{ ganancia_color }};box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+      <strong style="font-size:1.1rem;">Tu ganancia de esta ronda:</strong>
+      <span style="font-size:1.8rem;font-weight:bold;font-family:monospace;color:{{ ganancia_color }};">
+        {{ my_extraction }} × {{ token_value }} = {{ earnings_round }} pesos
+      </span>
+    </div>
+
+    <hr style="border-top:1px solid #eee;margin:15px 0;">
+
+    <!-- regeneration -->
+    <div class="summary-line">
+      <strong>Regeneración (+18%):</strong> <span style="font-family:monospace;">{{ regeneration }}</span> hectáreas
+    </div>
+
+    <!-- TOTAL DISPONIBLE -->
+    <div class="summary-line" id="box-newResources"
+         style="margin-top:15px;padding:15px;background:{{ newres_bg }};border-radius:8px;justify-content:space-between;border-left:6px solid {{ newres_color }};box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+      <strong style="font-size:1.1rem;">Total disponible para próxima ronda:</strong>
+      <span style="font-size:1.8rem;font-weight:bold;font-family:monospace;color:{{ newres_color }};">{{ pool_after }} ha</span>
+    </div>
+
+    {% if pool_after <= 2 %}
+    <div style="margin-top:20px;padding:15px;background:#fef3cd;border-left:4px solid #E67E22;border-radius:6px;text-align:center;">
+      <strong>El bosque se ha agotado.</strong>
+    </div>
+    {% endif %}
+
+    {% if round_number == total_rounds %}
+    <div style="margin-top:20px;padding:15px;background:#fef3cd;border-left:4px solid #E67E22;border-radius:6px;text-align:center;">
+      <strong>¡Has completado las {{ total_rounds }} rondas del juego!</strong>
+    </div>
+    {% endif %}
+
+  </div>
+</main>
+
+<script>
+(function() {
+  var opponents = {{ opponents }};
+
+  var UNI_LOGO_CLASS = {
+    UDD:'logo-udd', UTalca:'logo-utalca', UAndes:'logo-uandes', USACH:'logo-usach'
+  };
+
+  function buildIcon(university, relation, sizePx, icon) {
+    var isAnon = !university || relation === 'anon';
+    var size = 'width:' + sizePx + 'px;height:' + sizePx + 'px;' + (isAnon ? 'color:#888;' : '');
+    var base = isAnon
+      ? '<svg class="anon-icon" viewBox="0 0 64 64">' +
+          '<circle cx="32" cy="20" r="11" fill="currentColor"/>' +
+          '<path d="M10,60 Q10,38 32,38 Q54,38 54,60 Z" fill="currentColor"/></svg>'
+      : '<span class="uni-logo ' + (UNI_LOGO_CLASS[university] || '') + '"></span>';
+    var badge = icon
+      ? '<svg class="career-badge" viewBox="0 0 64 64"><use href="#av-' + icon + '"></use></svg>'
+      : '';
+    return '<span class="combo-avatar" style="' + size + '">' + base + badge + '</span>';
+  }
+
+  var container = document.getElementById('opponents-feedback');
+  var html = '';
+  var anonCount = 0;
+  opponents.forEach(function(opp) {
+    var isAnon   = opp.relation === 'anon';
+    var uniLabel = isAnon ? '' : opp.university;
+    if (isAnon) anonCount++;
+    var degLabel = isAnon ? ('Anónimo/a ' + anonCount) : opp.degree;
+    html += '<div class="player ' + opp.relation + '" style="display:inline-flex;flex-direction:column;align-items:center;text-align:center;">';
+    html += buildIcon(opp.university, opp.relation, 60, opp.icon);
+    html += '<span style="font-size:0.65rem;margin-top:4px;">' + uniLabel + '</span>';
+    html += '<span class="label" style="font-size:0.8rem;font-weight:bold;">' + degLabel + '</span>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+})();
+</script>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

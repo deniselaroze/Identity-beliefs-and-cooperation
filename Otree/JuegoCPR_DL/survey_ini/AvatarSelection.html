@@ -1,0 +1,205 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css?v=3">
+{{ endblock }}
+
+{{ block content }}
+
+<!-- Sprite de íconos de carrera (avatar combinado: logo universidad + ícono) -->
+<svg style="display:none">
+  <symbol id="av-1" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/></symbol>
+  <symbol id="av-2" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="currentColor"/></symbol>
+  <symbol id="av-3" viewBox="0 0 64 64"><polygon points="32,4 60,32 32,60 4,32" fill="currentColor"/></symbol>
+  <symbol id="av-4" viewBox="0 0 64 64"><polygon points="32,4 62,60 2,60" fill="currentColor"/></symbol>
+  <symbol id="av-5" viewBox="0 0 64 64"><polygon points="32,4 59,22 49,54 15,54 5,22" fill="currentColor"/></symbol>
+  <symbol id="av-6" viewBox="0 0 64 64"><polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="currentColor"/></symbol>
+  <symbol id="av-7" viewBox="0 0 64 64"><polygon points="32,4 38,24 60,24 43,37 49,58 32,45 15,58 21,37 4,24 26,24" fill="currentColor"/></symbol>
+  <symbol id="av-8" viewBox="0 0 64 64"><rect x="24" y="2" width="16" height="60" fill="currentColor"/><rect x="2" y="24" width="60" height="16" fill="currentColor"/></symbol>
+  <symbol id="av-9" viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="30" ry="18" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <h1>Representación Visual</h1>
+</header>
+
+<main>
+  <div class="welcome-box" style="max-width:1200px; margin:0 auto; line-height:1.6;">
+
+    <p style="font-size:1.1rem; margin-bottom:20px;">
+      A continuación verán un listado con las <strong>carreras</strong> de las personas reales con las que
+      podrán interactuar en esta sesión (sin importar su universidad). Para facilitar su identificación en
+      las siguientes pantallas, les pedimos que <strong>elijan una figura distinta para representar a cada
+      carrera</strong> haciendo click en el icono que prefieran para cada una. 
+    </p>
+
+    <!-- El JS serializa aquí el JSON de asignaciones antes del envío -->
+    <input type="hidden" name="avatar_assignments_json" id="avatar_assignments_json" value="">
+
+    <div id="dynamic-avatar-container"
+         style="display:flex; flex-direction:column; gap:16px; width:100%;">
+      <p style="text-align:center; color:#888;">Cargando carreras...</p>
+    </div>
+
+    <div id="error-msg"
+         style="color:#dc3545; text-align:center; display:none; margin-top:20px; font-weight:bold;">
+    </div>
+
+  </div>
+</main>
+
+<script>
+const CAREERS_DATA = {{ careers_json }};
+
+const AVATARS = [
+  { id: '1', symbol: '#av-1', label: 'Círculo'   },
+  { id: '2', symbol: '#av-2', label: 'Cuadrado'  },
+  { id: '3', symbol: '#av-3', label: 'Rombo'     },
+  { id: '4', symbol: '#av-4', label: 'Triángulo' },
+  { id: '5', symbol: '#av-5', label: 'Pentágono' },
+  { id: '6', symbol: '#av-6', label: 'Hexágono'  },
+  { id: '7', symbol: '#av-7', label: 'Estrella'  },
+  { id: '8', symbol: '#av-8', label: 'Cruz'      },
+  { id: '9', symbol: '#av-9', label: 'Óvalo'     },
+];
+
+/* Sin colores aquí: el color por relación (misma U / misma carrera, etc.)
+   solo tiene sentido una vez que se conoce la combinación universidad-carrera
+   de cada compañero, en las páginas siguientes (Trust, Conflict, etc.). */
+const ROW_COLOR = '#888';
+
+/* Construye una fila (carrera real o anónima) con estructura y estilo idénticos */
+function buildRow(key, relationClass, infoHtml, inputName) {
+  const row = document.createElement('div');
+  row.dataset.groupKey = key;
+  row.style.cssText =
+    'display:flex; align-items:flex-start; gap:20px; padding:16px; ' +
+    'border:1px solid #ddd; border-left:5px solid ' + ROW_COLOR + '; ' +
+    'border-radius:8px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.04);';
+
+  const info = document.createElement('div');
+  info.style.cssText = 'min-width:210px; max-width:230px; padding-top:4px;';
+  info.innerHTML = infoHtml;
+
+  const picker = document.createElement('div');
+  picker.className = 'avatar-picker group-' + relationClass;
+  picker.style.cssText = 'margin-top:0; flex:1;';
+
+  AVATARS.forEach(function (av) {
+    const lbl = document.createElement('label');
+    lbl.className = 'avatar-option';
+    lbl.title = av.label;
+    lbl.innerHTML =
+      '<input type="radio" name="' + inputName + '" value="' + av.id + '">' +
+      '<svg viewBox="0 0 64 64"><use href="' + av.symbol + '"></use></svg>';
+    picker.appendChild(lbl);
+  });
+
+  row.appendChild(info);
+  row.appendChild(picker);
+  return row;
+}
+
+function buildRows() {
+  const container = document.getElementById('dynamic-avatar-container');
+  container.innerHTML = '';
+
+  if (!CAREERS_DATA.length) {
+    const msg = document.createElement('p');
+    msg.style.cssText = 'text-align:center;color:#888;';
+    msg.textContent = 'No hay otras carreras registradas aún.';
+    container.appendChild(msg);
+  }
+
+  CAREERS_DATA.forEach(function (career) {
+    const inputName = 'av_' + career.key.replace(/[^a-zA-Z0-9]/g, '_');
+    const infoHtml = '<strong style="font-size:1rem;color:#333;">' + career.degree + '</strong>';
+    container.appendChild(buildRow(career.key, career.relation, infoHtml, inputName));
+  });
+
+  /* Fila siempre presente: Estudiante Anónimo */
+  const anonInfoHtml = '<strong style="color:#333;font-size:1rem;">Estudiante Anónimo</strong><br>';
+  container.appendChild(buildRow('__anon__', 'anon', anonInfoHtml, 'av___anon__'));
+}
+
+buildRows();
+
+/* Marca con .is-selected el avatar-option cuyo radio está chequeado en cada fila */
+function updateSelected() {
+  document.querySelectorAll('[data-group-key]').forEach(function (row) {
+    row.querySelectorAll('.avatar-option').forEach(function (opt) {
+      const input = opt.querySelector('input[type="radio"]');
+      opt.classList.toggle('is-selected', !!(input && input.checked));
+    });
+  });
+}
+
+/* Bloqueo mutuo: deshabilita en todas las demás filas el avatar ya elegido */
+function updateDisabled() {
+  /* 1. Recopilar qué avatar está seleccionado en cada fila */
+  const selectedByRow = {};
+  document.querySelectorAll('[data-group-key]').forEach(function (row) {
+    const checked = row.querySelector('input[type="radio"]:checked');
+    selectedByRow[row.dataset.groupKey] = checked ? checked.value : null;
+  });
+
+  /* 2. Para cada fila, bloquear los avatares escogidos en OTRAS filas */
+  document.querySelectorAll('[data-group-key]').forEach(function (row) {
+    const myKey = row.dataset.groupKey;
+    const takenElsewhere = new Set(
+      Object.entries(selectedByRow)
+        .filter(function (entry) { return entry[0] !== myKey && entry[1] !== null; })
+        .map(function (entry) { return entry[1]; })
+    );
+
+    row.querySelectorAll('.avatar-option').forEach(function (opt) {
+      const input = opt.querySelector('input[type="radio"]');
+      const taken = takenElsewhere.has(input.value);
+      input.disabled = taken;
+      opt.classList.toggle('disabled', taken);
+    });
+  });
+}
+
+/* Escuchar cambios en cualquier radio del contenedor */
+document.getElementById('dynamic-avatar-container')
+  .addEventListener('change', function () {
+    updateSelected();
+    updateDisabled();
+  });
+
+/* Validación y serialización al enviar */
+document.querySelector('form').addEventListener('submit', function (e) {
+  const assignments = {};
+  let allSelected   = true;
+  const errEl       = document.getElementById('error-msg');
+
+  document.querySelectorAll('[data-group-key]').forEach(function (row) {
+    const key     = row.dataset.groupKey;
+    const checked = row.querySelector('input[type="radio"]:checked');
+    if (!checked) {
+      allSelected = false;
+    } else {
+      assignments[key] = checked.value;
+    }
+  });
+
+  if (!allSelected) {
+    e.preventDefault();
+    errEl.textContent   = 'Por favor, elija un avatar para cada una de las carreras antes de continuar.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const vals = Object.values(assignments);
+  if (new Set(vals).size !== vals.length) {
+    e.preventDefault();
+    errEl.textContent   = 'Por favor, elija un avatar DISTINTO para cada carrera.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  document.getElementById('avatar_assignments_json').value = JSON.stringify(assignments);
+});
+</script>
+
+<button type="submit">Continuar</button>
+{{ endblock }}

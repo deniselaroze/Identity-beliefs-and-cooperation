@@ -1,0 +1,185 @@
+{{ block styles }}
+<link rel="stylesheet" href="/static/global/styles.css">
+{{ endblock }}
+
+{{ block content }}
+
+<!-- Sprite de íconos de carrera (avatar combinado: logo universidad + ícono) -->
+<svg style="display:none">
+  <symbol id="av-1" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="currentColor"/></symbol>
+  <symbol id="av-2" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="currentColor"/></symbol>
+  <symbol id="av-3" viewBox="0 0 64 64"><polygon points="32,4 60,32 32,60 4,32" fill="currentColor"/></symbol>
+  <symbol id="av-4" viewBox="0 0 64 64"><polygon points="32,4 62,60 2,60" fill="currentColor"/></symbol>
+  <symbol id="av-5" viewBox="0 0 64 64"><polygon points="32,4 59,22 49,54 15,54 5,22" fill="currentColor"/></symbol>
+  <symbol id="av-6" viewBox="0 0 64 64"><polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="currentColor"/></symbol>
+  <symbol id="av-7" viewBox="0 0 64 64"><polygon points="32,4 38,24 60,24 43,37 49,58 32,45 15,58 21,37 4,24 26,24" fill="currentColor"/></symbol>
+  <symbol id="av-8" viewBox="0 0 64 64"><rect x="24" y="2" width="16" height="60" fill="currentColor"/><rect x="2" y="24" width="60" height="16" fill="currentColor"/></symbol>
+  <symbol id="av-9" viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="30" ry="18" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <h1>Expectativas durante el Juego</h1>
+</header>
+
+<main>
+  <div class="welcome-box" style="max-width:1000px; margin:0 auto; text-align:justify; line-height:1.6;">
+
+    <p style="text-align:center; font-size:1.1rem; margin-bottom:30px;">
+      Antes de continuar el juego, volvemos a preguntar por sus expectativas sobre lo que harán
+      los otros integrantes de tu grupo en la próxima ronda.
+    </p>
+
+    <p style="text-align:center; font-size:1.1rem; margin-bottom:30px;">
+      Considerando que en la próxima ronda habrán {{bosque_disponible}} ha y la cuota
+      sustentable individual es de {{cuota_sustentable}} ha, 
+      de las 0–10 hectáreas que se pueden cosechar, <strong> ¿cuántas crees que
+      <em>cosecharán</em>, en promedio, los estudiantes de las siguientes carreras?</strong>
+    </p>
+
+    <input type="hidden" name="expectation_rg_json" id="expectation_rg_json" value="">
+
+    <div id="dynamic-expectations-container"
+         style="background-color:#fff; border:1px solid #ddd; border-radius:8px;
+                padding:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+      <p style="text-align:center; color:#888; padding:20px;">Cargando perfiles...</p>
+    </div>
+
+    <div id="exp-error"
+         style="color:#dc3545; text-align:center; display:none; margin-top:15px; font-weight:bold;">
+      Por favor, responde todas las filas antes de continuar.
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  var OPPONENTS = {{ opponents }};
+
+  var UNI_LOGO_CLASS = {
+    UDD:'logo-udd', UTalca:'logo-utalca', UAndes:'logo-uandes', USACH:'logo-usach'
+  };
+
+  var RELATION_COLOR = {
+    you:'#440154', nearClose:'#31688E', nearFar:'#35B779', far:'#D4AC0D'
+  };
+
+  var SCALE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  /* Avatar del compañero: logo de su universidad (color según relación) +
+     ícono de su carrera, o silueta genérica + ícono "anónimo" si no se conoce identidad */
+  function buildIcon(university, relation, color, sizePx, icon) {
+    var size = 'width:' + sizePx + 'px;height:' + sizePx + 'px;';
+    var base;
+    if (!university || relation === 'anon') {
+      base = '<svg class="anon-icon" viewBox="0 0 64 64" style="color:#888;">' +
+        '<circle cx="32" cy="20" r="11" fill="currentColor"/>' +
+        '<path d="M10,60 Q10,38 32,38 Q54,38 54,60 Z" fill="currentColor"/></svg>';
+    } else {
+      var cls = UNI_LOGO_CLASS[university] || '';
+      base = '<span class="uni-logo ' + cls + '" style="color:' + color + ';"></span>';
+    }
+    var badge = icon
+      ? '<svg class="career-badge" viewBox="0 0 64 64" style="color:' + color + ';"><use href="#av-' + icon + '"></use></svg>'
+      : '';
+    return '<span class="combo-avatar" style="' + size + '">' + base + badge + '</span>';
+  }
+
+  function buildTable() {
+    var container = document.getElementById('dynamic-expectations-container');
+    container.innerHTML = '';
+
+    if (!OPPONENTS.length) {
+      container.innerHTML =
+        '<p style="text-align:center;color:#888;padding:20px;">No hay compañeros de equipo registrados.</p>';
+      return;
+    }
+
+    var table = document.createElement('table');
+    table.className = 'matrix-table';
+    table.style.width = '100%';
+    table.style.tableLayout = 'fixed';
+
+    /* Cabecera */
+    var colCount = SCALE.length;
+    var half     = Math.floor(colCount / 2);
+    var colWidth = 'width:calc(60% / ' + colCount + ');';
+    var thead =
+      '<thead>' +
+        '<tr>' +
+          '<th style="width:40%;"></th>' +
+          '<th colspan="' + half + '" style="text-align:left;font-weight:normal;color:#555;">Cosecha mínima</th>' +
+          (colCount % 2 === 1 ? '<th></th>' : '') +
+          '<th colspan="' + half + '" style="text-align:right;font-weight:normal;color:#555;">Cosecha máxima</th>' +
+        '</tr>' +
+        '<tr>' +
+          '<th></th>' +
+          SCALE.map(function (v) {
+            return '<th style="text-align:center;' + colWidth + '">' + v + '</th>';
+          }).join('') +
+        '</tr>' +
+      '</thead>';
+
+    var tbody = '<tbody>';
+
+    OPPONENTS.forEach(function (opp, idx) {
+      var isAnon = opp.relation === 'anon';
+      var rowKey = 'member_' + idx;
+      var color  = isAnon ? '#888' : (RELATION_COLOR[opp.relation] || '#555');
+      var infoHtml = isAnon
+        ? '<strong style="color:#888;">Estudiante Anónimo</strong>'
+        : '<strong style="color:' + color + ';">' + opp.university + ' - ' + opp.degree + '</strong>';
+
+      tbody +=
+        '<tr data-member-key="' + rowKey + '">' +
+          '<td class="item-text">' +
+            '<div style="display:flex;align-items:center;gap:12px;">' +
+              buildIcon(opp.university, opp.relation, color, 36, opp.icon) +
+              '<div>' + infoHtml + '</div>' +
+            '</div>' +
+          '</td>' +
+          SCALE.map(function (v) {
+            return '<td style="text-align:center;padding:12px 4px;">' +
+                     '<input type="radio" name="exp_rg_' + rowKey + '" value="' + v + '" style="transform:scale(1.3);cursor:pointer;">' +
+                   '</td>';
+          }).join('') +
+        '</tr>';
+    });
+
+    tbody += '</tbody>';
+    table.innerHTML = thead + tbody;
+    container.appendChild(table);
+  }
+
+  buildTable();
+
+  function handleSubmit(e) {
+    var ratings = {};
+    var allFilled = true;
+    OPPONENTS.forEach(function (opp, idx) {
+      var rowKey  = 'member_' + idx;
+      var checked = document.querySelector('input[name="exp_rg_' + rowKey + '"]:checked');
+      if (checked) {
+        ratings[rowKey] = parseInt(checked.value, 10);
+      } else {
+        allFilled = false;
+      }
+    });
+    if (!allFilled) {
+      e.preventDefault();
+      document.getElementById('exp-error').style.display = 'block';
+      return false;
+    }
+    document.getElementById('exp-error').style.display = 'none';
+    document.getElementById('expectation_rg_json').value = JSON.stringify(ratings);
+  }
+
+  window.addEventListener('load', function () {
+    var form = document.getElementById('form');
+    if (form) form.addEventListener('submit', handleSubmit);
+  });
+})();
+</script>
+
+<button type="submit">Continuar</button>
+{{ endblock }}
